@@ -1,0 +1,96 @@
+[
+  {
+    "id": "kcet-2025-application",
+    "title": "KCET 2025 Application Process - Important Dates Announced",
+    "image": "/placeholder.svg",
+    "url": "https://cet.karnataka.gov.in",
+    "source": "KCET Official",
+    "publishedAt": "2025-08-31",
+    "type": "official",
+    "priority": 1
+  },
+  {
+    "id": "kcet-2025-exam-date",
+    "title": "KCET 2025 Exam Date Expected in April 2025",
+    "image": "/placeholder.svg",
+    "url": "https://cet.karnataka.gov.in",
+    "source": "KCET Official",
+    "publishedAt": "2025-08-31",
+    "type": "official",
+    "priority": 1
+  },
+  {
+    "id": "kcet-seat-matrix-2025",
+    "title": "KCET 2025 Seat Matrix - New Engineering Colleges Added",
+    "image": "/placeholder.svg",
+    "url": "https://cet.karnataka.gov.in",
+    "source": "KCET Updates",
+    "publishedAt": "2025-08-31",
+    "type": "official",
+    "priority": 2
+  },
+  {
+    "id": "kcet-counselling-2025",
+    "title": "KCET 2025 Counselling Schedule - Round-wise Details",
+    "image": "/placeholder.svg",
+    "url": "https://cet.karnataka.gov.in",
+    "source": "KCET Official",
+    "publishedAt": "2025-08-31",
+    "type": "official",
+    "priority": 2
+  },
+  {
+    "id": "kcet-fee-structure-2025",
+    "title": "KCET 2025 Fee Structure - Updated for All Categories",
+    "image": "/placeholder.svg",
+    "url": "https://cet.karnataka.gov.in",
+    "source": "KCET Updates",
+    "publishedAt": "2025-08-31",
+    "type": "official",
+    "priority": 3
+  },
+  {
+    "id": "toi-kcet-2025",
+    "title": "KCET 2025: Karnataka CET Application Process to Begin Soon",
+    "image": "/placeholder.svg",
+    "url": "https://timesofindia.indiatimes.com/education",
+    "source": "Times of India Education",
+    "publishedAt": "2025-08-31",
+    "type": "news",
+    "priority": 3
+  },
+  {
+    "id": "hindu-kcet-updates",
+    "title": "KCET 2025: New Engineering Colleges Join the Counselling Process",
+    "image": "/placeholder.svg",
+    "url": "https://www.thehindu.com/education/",
+    "source": "The Hindu Education",
+    "publishedAt": "2025-08-31",
+    "type": "news",
+    "priority": 3
+  },
+  {
+    "id": "reddit-1n4qapb",
+    "title": "Demotivators in this subreddit, be aware!",
+    "image": "auto",
+    "url": "https://www.reddit.com/r/kcet/comments/1n4qapb/demotivators_in_this_subreddit_be_aware/",
+    "source": "Reddit r/kcet",
+    "publishedAt": "2025-08-31",
+    "score": 23,
+    "comments": 82,
+    "type": "reddit",
+    "priority": 4
+  },
+  {
+    "id": "reddit-1mwzfbo",
+    "title": "A guide to Karnataka medical colleges (MBBS) - cutoffs, fees, and more",
+    "image": "https://b.thumbs.redditmedia.com/9uF3HsTxL8y4Xnt20O7zG01MMMkQLo3nKqKV_iPGtEU.jpg",
+    "url": "https://www.reddit.com/r/kcet/comments/1mwzfbo/a_guide_to_karnataka_medical_colleges_mbbs/",
+    "source": "Reddit r/kcet",
+    "publishedAt": "2025-08-22",
+    "score": 21,
+    "comments": 45,
+    "type": "reddit",
+    "priority": 4
+  }
+]

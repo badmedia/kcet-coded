@@ -1,0 +1,572 @@
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { Search, Filter, Upload, FileSpreadsheet, AlertCircle } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { XLSXLoader } from "@/lib/xlsx-loader"
+import { COURSES, COURSE_CODE_TO_NAME } from "@/lib/courses"
+
+// Types for the cutoff data
+interface CutoffData {
+  institute: string
+  institute_code: string
+  course: string
+  category: string
+  cutoff_rank: number
+  year: string
+  round: string
+}
+
+interface CutoffResponse {
+  metadata: {
+    last_updated: string
+    total_files_processed: number
+    total_entries: number
+  }
+  cutoffs: CutoffData[]
+}
+
+const CutoffExplorer = () => {
+  console.log('CutoffExplorer component rendering')
+  const [cutoffs, setCutoffs] = useState<CutoffData[]>([])
+  const [allCutoffs, setAllCutoffs] = useState<CutoffData[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedYear, setSelectedYear] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("")
+  const [selectedCourse, setSelectedCourse] = useState("")
+  const [selectedInstitute, setSelectedInstitute] = useState("")
+  const [selectedRound, setSelectedRound] = useState("")
+  const [availableYears, setAvailableYears] = useState<string[]>([])
+  const [availableInstitutes, setAvailableInstitutes] = useState<string[]>([])
+  const [availableCategories, setAvailableCategories] = useState<string[]>([])
+  const [availableRounds, setAvailableRounds] = useState<string[]>([])
+  const [stats, setStats] = useState<{ total: number; institutes: number; courses: number; categories: number }>({ total: 0, institutes: 0, courses: 0, categories: 0 })
+  const [page, setPage] = useState(1)
+  const [pageSize] = useState(50)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [xlsxLoading, setXlsxLoading] = useState(false)
+  const { toast } = useToast()
+
+  // Load data from local JSON file
+  const loadCutoffData = async () => {
+    setLoading(true)
+    try {
+      console.log('Loading cutoff data from local JSON file...')
+      
+      // Fetch the JSON data from the public folder (absolute path for subroutes)
+              const response = await fetch('/kcet_cutoffs.json')
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.status}`)
+      }
+      
+      const data: CutoffResponse = await response.json()
+      console.log('Loaded cutoff data:', data.cutoffs.length, 'records')
+      console.log('First record:', data.cutoffs[0])
+      console.log('Data structure:', Object.keys(data))
+      
+      setAllCutoffs(data.cutoffs)
+      
+      // Extract unique values from the data
+      const years = [...new Set(data.cutoffs.map(item => item.year))].sort((a, b) => b.localeCompare(a))
+      
+      // Filter institutes to only E001 to E314
+      const allInstitutes = [...new Set(data.cutoffs.map(item => item.institute))].sort()
+      const filteredInstitutes = allInstitutes.filter(inst => {
+        const match = inst.match(/E(\d+)/)
+        if (match) {
+          const num = parseInt(match[1])
+          return num >= 1 && num <= 314
+        }
+        return false
+      })
+      
+      const categories = [...new Set(data.cutoffs.map(item => item.category))].sort()
+      const rounds = [...new Set(data.cutoffs.map(item => item.round))].sort()
+      
+      console.log('Available institutes:', filteredInstitutes.length, filteredInstitutes.slice(0, 10))
+      
+      setAvailableYears(years)
+      setAvailableInstitutes(filteredInstitutes)
+      setAvailableCategories(['ALL', ...categories])
+      setAvailableRounds(['ALL', ...rounds])
+      
+      // Set default year to the most recent year
+      if (years.length > 0) {
+        setSelectedYear(years[0])
+      }
+      if (categories.length > 0) {
+        setSelectedCategory('ALL')
+      }
+      if (rounds.length > 0) {
+        setSelectedRound('ALL')
+      }
+      
+      setCutoffs(data.cutoffs.slice(0, 200)) // Show first 200 records initially
+    } catch (error: any) {
+      console.error('Error loading cutoff data:', error)
+      setErrorMessage(error?.message || 'Unknown error while loading data')
+      toast({
+        title: "Error",
+        description: "Failed to load cutoff data. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Load data from XLSX files automatically
+  const loadFromXLSX = async () => {
+    setXlsxLoading(true)
+    try {
+      const result = await XLSXLoader.loadAllXLSXFiles()
+      
+      // Convert XLSX data to match existing format
+      const convertedData: CutoffData[] = result.cutoffs.map(item => ({
+        institute: item.institute || '',
+        institute_code: item.institute_code || '',
+        course: item.course || '',
+        category: item.category || '',
+        cutoff_rank: item.cutoff_rank || 0,
+        year: item.year || '',
+        round: item.round || ''
+      }))
+
+      setAllCutoffs(convertedData)
+      
+      // Extract unique values from the data
+      const years = [...new Set(convertedData.map(item => item.year))].sort((a, b) => b.localeCompare(a))
+      
+      // Filter institutes to only E001 to E314
+      const allInstitutes = [...new Set(convertedData.map(item => item.institute))].sort()
+      const filteredInstitutes = allInstitutes.filter(inst => {
+        const match = inst.match(/E(\d+)/)
+        if (match) {
+          const num = parseInt(match[1])
+          return num >= 1 && num <= 314
+        }
+        return false
+      })
+      
+      const categories = [...new Set(convertedData.map(item => item.category))].sort()
+      const rounds = [...new Set(convertedData.map(item => item.round))].sort()
+      
+      setAvailableYears(years)
+      setAvailableInstitutes(filteredInstitutes)
+      setAvailableCategories(['ALL', ...categories])
+      setAvailableRounds(['ALL', ...rounds])
+      
+      // Set default year to the most recent year
+      if (years.length > 0) {
+        setSelectedYear(years[0])
+      }
+      if (categories.length > 0) {
+        setSelectedCategory('ALL')
+      }
+      if (rounds.length > 0) {
+        setSelectedRound('ALL')
+      }
+      
+      setCutoffs(convertedData.slice(0, 200)) // Show first 200 records initially
+      
+      toast({
+        title: "Success",
+        description: `Loaded ${convertedData.length} records from XLSX files`,
+      })
+    } catch (error: any) {
+      console.error('Error loading XLSX data:', error)
+      toast({
+        title: "Error",
+        description: error?.message || 'Failed to load XLSX files',
+        variant: "destructive"
+      })
+    } finally {
+      setXlsxLoading(false)
+    }
+  }
+
+  // Filter data based on current filters
+  const filterData = () => {
+    console.log('Filtering data with:', { selectedYear, selectedCategory, selectedCourse, selectedInstitute, selectedRound, searchQuery })
+    
+    let filteredData = allCutoffs
+
+    // Filter by year
+    if (selectedYear) {
+      filteredData = filteredData.filter(item => item.year === selectedYear)
+    }
+
+    // Filter by category
+    if (selectedCategory && selectedCategory !== 'ALL') {
+      filteredData = filteredData.filter(item => item.category === selectedCategory)
+    }
+
+    // Filter by institute
+    if (selectedInstitute) {
+      filteredData = filteredData.filter(item => item.institute === selectedInstitute)
+    }
+
+    // Filter by round
+    if (selectedRound && selectedRound !== 'ALL') {
+      filteredData = filteredData.filter(item => item.round === selectedRound)
+    }
+
+    // Filter by search query
+    if (searchQuery) {
+      filteredData = filteredData.filter(item => 
+        item.institute?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.course?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.institute_code?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    }
+
+    // Filter by selected course
+    if (selectedCourse) {
+      filteredData = filteredData.filter(item => item.course === selectedCourse)
+    }
+
+    // Update stats
+    const instituteSet = new Set(filteredData.map(i => i.institute_code))
+    const courseSet = new Set(filteredData.map(i => i.course))
+    const categorySet = new Set(filteredData.map(i => i.category))
+    setStats({
+      total: filteredData.length,
+      institutes: instituteSet.size,
+      courses: courseSet.size,
+      categories: categorySet.size,
+    })
+
+    // Pagination
+    const start = (page - 1) * pageSize
+    const end = start + pageSize
+    console.log('Filtered data:', filteredData.length, 'records')
+    setCutoffs(filteredData.slice(start, end))
+  }
+
+  useEffect(() => {
+    loadCutoffData()
+  }, [])
+
+  useEffect(() => {
+    if (allCutoffs.length > 0) {
+      filterData()
+    }
+  }, [selectedYear, selectedCategory, selectedCourse, selectedInstitute, selectedRound, searchQuery, allCutoffs, page, pageSize])
+
+  const handleSearch = () => {
+    filterData()
+  }
+
+  const getSeatTypeColor = (seatType: string) => {
+    switch (seatType) {
+      case 'government': return 'bg-green-100 text-green-800'
+      case 'management': return 'bg-yellow-100 text-yellow-800'
+      case 'comed_k': return 'bg-blue-100 text-blue-800'
+      default: return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'GM': return 'bg-blue-100 text-blue-800'
+      case 'SC': return 'bg-green-100 text-green-800'
+      case 'ST': return 'bg-purple-100 text-purple-800'
+      case '1G': return 'bg-red-100 text-red-800'
+      case '2A': return 'bg-orange-100 text-orange-800'
+      case '2B': return 'bg-yellow-100 text-yellow-800'
+      case '3A': return 'bg-pink-100 text-pink-800'
+      case '3B': return 'bg-indigo-100 text-indigo-800'
+      default: return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const getRoundDisplayName = (round: string) => {
+    switch (round) {
+      case 'Round 1': return 'Round 1'
+      case 'Round 2': return 'Round 2'
+      case 'Round 3': return 'Round 3'
+      case 'Round 3 (Extended)': return 'Round 3 (Extended)'
+      case 'Mock Round 1': return 'Mock Round 1'
+      default: return round
+    }
+  }
+
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Cutoff Explorer</h1>
+          <p className="text-muted-foreground">
+            Explore and analyze KCET cutoff data across different years, colleges, and categories
+          </p>
+        </div>
+      </div>
+
+
+
+      {/* Filters */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            Search & Filters
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+            <div className="space-y-2">
+              <Label htmlFor="search">Search</Label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="search"
+                  placeholder="College or branch name..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Year</Label>
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select year" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableYears.map((year) => (
+                    <SelectItem key={year} value={year}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Round</Label>
+              <Select value={selectedRound} onValueChange={setSelectedRound}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select round" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableRounds.map((round) => (
+                    <SelectItem key={round} value={round}>
+                      {round === 'ALL' ? 'All Rounds' : getRoundDisplayName(round)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Institute</Label>
+              <Select value={selectedInstitute || 'ALL'} onValueChange={(v) => setSelectedInstitute(v === 'ALL' ? '' : v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select institute" />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  <SelectItem value="ALL">All Institutes</SelectItem>
+                  {availableInstitutes.map((inst) => (
+                    <SelectItem key={inst} value={inst}>
+                      {inst}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Category</Label>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableCategories.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat === 'ALL' ? 'All Categories' : cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Course</Label>
+              <Select value={selectedCourse || 'ALL'} onValueChange={(v) => setSelectedCourse(v === 'ALL' ? '' : v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All courses" />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  <SelectItem value="ALL">All Courses</SelectItem>
+                  {COURSES.map((c) => (
+                    <SelectItem key={c.code} value={c.code}>
+                      {c.code} — {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="flex items-end gap-2 mt-4">
+              <Button onClick={handleSearch} className="flex-1">
+                Search
+              </Button>
+              <Button variant="outline" size="icon">
+                {/* <Download className="h-4 w-4" /> */}
+              </Button>
+            </div>
+        </CardContent>
+      </Card>
+
+      {/* Summary */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-muted-foreground">Results</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.total.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Matching cutoff entries</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-muted-foreground">Institutes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.institutes}</div>
+            <p className="text-xs text-muted-foreground">Appearing in results</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-muted-foreground">Courses</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.courses}</div>
+            <p className="text-xs text-muted-foreground">Distinct course codes</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-muted-foreground">Categories</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.categories}</div>
+            <p className="text-xs text-muted-foreground">Present in results</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Results */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              {/* <TrendingUp className="h-5 w-5" /> */}
+              Cutoff Results ({stats.total} total, page {page})
+            </CardTitle>
+            <div className="flex gap-2">
+              <Badge variant="outline">{selectedYear}</Badge>
+              {selectedCategory && <Badge variant="outline">{selectedCategory.toUpperCase()}</Badge>}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {errorMessage && (
+            <div className="mb-4 rounded-none border-2 border-destructive/40 bg-destructive/10 p-3 text-sm">
+              <div className="font-semibold">Data load failed</div>
+              <div className="opacity-80">{errorMessage}</div>
+            </div>
+          )}
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p className="text-muted-foreground mt-2">Loading cutoffs...</p>
+            </div>
+          ) : cutoffs.length > 0 ? (
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Institute</TableHead>
+                    <TableHead>Course</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Round</TableHead>
+                    <TableHead className="text-right">Cutoff Rank</TableHead>
+                    <TableHead className="text-center">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {cutoffs.map((cutoff, index) => (
+                    <TableRow key={`${cutoff.institute_code}-${cutoff.course}-${cutoff.category}-${index}`}>
+                      <TableCell>
+                        <div>
+                          <div className="font-medium">{cutoff.institute}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {cutoff.institute_code}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          <div className="font-medium">{COURSE_CODE_TO_NAME[cutoff.course] || cutoff.course}</div>
+                          <div className="text-sm text-muted-foreground">{cutoff.course}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getCategoryColor(cutoff.category)}>
+                          {cutoff.category?.toUpperCase()}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {cutoff.round}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right font-mono font-semibold">
+                        {cutoff.cutoff_rank?.toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Button variant="ghost" size="sm">
+                          {/* <Eye className="h-4 w-4" /> */}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              {/* Pagination */}
+              <div className="flex items-center justify-between p-3">
+                <div className="text-sm text-muted-foreground">Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, stats.total)} of {stats.total}</div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1}>Prev</Button>
+                  <Button variant="outline" size="sm" onClick={() => setPage(page * pageSize < stats.total ? page + 1 : page)} disabled={page * pageSize >= stats.total}>Next</Button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No cutoffs found</h3>
+              <p className="text-muted-foreground">Try adjusting your search criteria</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+export default CutoffExplorer
