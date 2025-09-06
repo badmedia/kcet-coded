@@ -22,6 +22,8 @@ interface CutoffData {
   cutoff_rank: number
   year: string
   round: string
+  total_seats?: number
+  available_seats?: number
 }
 
 interface CutoffResponse {

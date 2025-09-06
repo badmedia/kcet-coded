@@ -35,6 +35,7 @@ interface NewsItem {
   url: string
   source?: string
   publishedAt?: string
+  summary?: string
 }
 
 const Dashboard = () => {
