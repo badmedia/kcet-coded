@@ -654,6 +654,14 @@ const Dashboard = () => {
         </div>
       )}
 
+      {/* Watermark */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <div className="bg-black/20 backdrop-blur-sm rounded-full px-3 py-2 text-xs text-white/70 flex items-center gap-1">
+          <span>❤️</span>
+          <span>by u/Elegant_Compote9073</span>
+        </div>
+      </div>
+
       {/* End News */}
     </div>
   )
