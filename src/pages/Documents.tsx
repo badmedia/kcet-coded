@@ -24,6 +24,13 @@ const Documents = () => {
           required: true
         },
         {
+          name: "10th Standard Study Certificate",
+          type: "Original + Copies",
+          copies: 4,
+          description: "Study certificate from 10th standard institution + 3 copies (may vary college to college) + 1 for own reference",
+          required: true
+        },
+        {
           name: "12th Standard Study Certificate",
           type: "Original + Copies",
           copies: 4,
