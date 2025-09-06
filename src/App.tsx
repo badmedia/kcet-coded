@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
+import { PWAInstallBanner } from "./components/PWAInstallBanner";
 import Dashboard from "./pages/Dashboard";
 import RankPredictor from "./pages/RankPredictor";
 import CutoffExplorer from "./pages/CutoffExplorer";
@@ -58,6 +59,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
+        <PWAInstallBanner />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

@@ -55,6 +55,13 @@ const CutoffExplorer = () => {
   const [xlsxLoading, setXlsxLoading] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const isMobile = useIsMobile()
+  
+  // Keep filters open by default on mobile
+  useEffect(() => {
+    if (isMobile) {
+      setShowFilters(true)
+    }
+  }, [isMobile])
   const { toast } = useToast()
 
   // Load data from local JSON file
@@ -369,9 +376,9 @@ const CutoffExplorer = () => {
 
         {/* Filters */}
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <Filter className="h-5 w-5" />
                 Search & Filters
               </CardTitle>
@@ -388,8 +395,8 @@ const CutoffExplorer = () => {
               )}
             </div>
           </CardHeader>
-          <CardContent>
-            <div className={`space-y-4 ${isMobile && !showFilters ? 'hidden' : ''}`}>
+          <CardContent className="pt-0">
+            <div className={`space-y-4 transition-all duration-200 ${isMobile && !showFilters ? 'hidden' : ''}`}>
               {/* Search - always visible on mobile */}
               <div className="space-y-2">
                 <Label htmlFor="search">Search</Label>
@@ -406,7 +413,7 @@ const CutoffExplorer = () => {
               </div>
 
               {/* Filter Grid - responsive */}
-              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
                 <div className="space-y-2">
                   <Label>Year</Label>
                   <Select value={selectedYear} onValueChange={setSelectedYear}>
@@ -622,44 +629,69 @@ const CutoffExplorer = () => {
                 </div>
 
                 {/* Mobile Cards */}
-                <div className="lg:hidden space-y-3">
+                <div className="lg:hidden space-y-4">
                   {cutoffs.map((cutoff, index) => (
-                    <Card key={`${cutoff.institute_code}-${cutoff.course}-${cutoff.category}-${index}`} className="p-4">
-                      <div className="space-y-3">
-                        <div>
-                          <div className="font-medium text-lg">{cutoff.institute}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {cutoff.institute_code}
+                    <Card key={`${cutoff.institute_code}-${cutoff.course}-${cutoff.category}-${index}`} className="p-4 hover:shadow-md transition-shadow">
+                      <div className="space-y-4">
+                        {/* Header */}
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-lg leading-tight">{cutoff.institute}</div>
+                            <div className="text-sm text-muted-foreground mt-1">
+                              {cutoff.institute_code}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-primary">
+                              {cutoff.cutoff_rank?.toLocaleString()}
+                            </div>
+                            <div className="text-xs text-muted-foreground">Cutoff Rank</div>
                           </div>
                         </div>
                         
-                        <div>
-                          <div className="font-medium">{COURSE_CODE_TO_NAME[cutoff.course] || cutoff.course}</div>
+                        {/* Course Info */}
+                        <div className="bg-muted/50 rounded-lg p-3">
+                          <div className="font-medium text-base">{COURSE_CODE_TO_NAME[cutoff.course] || cutoff.course}</div>
                           <div className="text-sm text-muted-foreground">{cutoff.course}</div>
                         </div>
 
+                        {/* Badges */}
                         <div className="flex flex-wrap gap-2">
-                          <Badge className={getCategoryColor(cutoff.category)}>
+                          <Badge className={`${getCategoryColor(cutoff.category)} text-xs px-2 py-1`}>
                             {cutoff.category?.toUpperCase()}
                           </Badge>
-                          <Badge variant="outline">
+                          <Badge variant="outline" className="text-xs px-2 py-1">
                             {cutoff.round}
+                          </Badge>
+                          <Badge variant="secondary" className="text-xs px-2 py-1">
+                            {cutoff.year}
                           </Badge>
                         </div>
 
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-muted-foreground">Cutoff Rank:</span>
-                          <span className="font-mono font-semibold text-lg">
-                            {cutoff.cutoff_rank?.toLocaleString()}
-                          </span>
-                        </div>
+                        {/* Additional Info */}
+                        {(cutoff.total_seats || cutoff.available_seats) && (
+                          <div className="grid grid-cols-2 gap-3 text-sm">
+                            {cutoff.total_seats && (
+                              <div className="text-center p-2 bg-muted/30 rounded">
+                                <div className="font-semibold">{cutoff.total_seats}</div>
+                                <div className="text-muted-foreground">Total Seats</div>
+                              </div>
+                            )}
+                            {cutoff.available_seats && (
+                              <div className="text-center p-2 bg-muted/30 rounded">
+                                <div className="font-semibold">{cutoff.available_seats}</div>
+                                <div className="text-muted-foreground">Available</div>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </Card>
                   ))}
                 </div>
 
                 {/* Pagination */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-3 border-t">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t bg-muted/20">
                   <div className="text-sm text-muted-foreground text-center sm:text-left">
                     Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, stats.total)} of {stats.total}
                   </div>
@@ -669,16 +701,23 @@ const CutoffExplorer = () => {
                       size="sm" 
                       onClick={() => setPage(Math.max(1, page - 1))} 
                       disabled={page === 1}
+                      className="min-h-[44px] min-w-[44px] touch-manipulation"
                     >
-                      Prev
+                      <span className="hidden sm:inline">Previous</span>
+                      <span className="sm:hidden">←</span>
                     </Button>
+                    <div className="flex items-center px-3 py-2 text-sm font-medium bg-background border rounded-md min-h-[44px]">
+                      Page {page}
+                    </div>
                     <Button 
                       variant="outline" 
                       size="sm" 
                       onClick={() => setPage(page * pageSize < stats.total ? page + 1 : page)} 
                       disabled={page * pageSize >= stats.total}
+                      className="min-h-[44px] min-w-[44px] touch-manipulation"
                     >
-                      Next
+                      <span className="hidden sm:inline">Next</span>
+                      <span className="sm:hidden">→</span>
                     </Button>
                   </div>
                 </div>
