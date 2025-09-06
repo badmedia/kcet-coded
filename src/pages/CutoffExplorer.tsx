@@ -7,8 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Search, Filter, Upload, FileSpreadsheet, AlertCircle } from "lucide-react"
+import { Search, Filter, Upload, FileSpreadsheet, AlertCircle, ChevronDown, ChevronUp } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { XLSXLoader } from "@/lib/xlsx-loader"
 import { COURSES, COURSE_CODE_TO_NAME } from "@/lib/courses"
 
@@ -52,6 +53,8 @@ const CutoffExplorer = () => {
   const [pageSize] = useState(50)
   const [errorMessage, setErrorMessage] = useState("")
   const [xlsxLoading, setXlsxLoading] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
+  const isMobile = useIsMobile()
   const { toast } = useToast()
 
   // Load data from local JSON file
@@ -299,272 +302,343 @@ const CutoffExplorer = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Cutoff Explorer</h1>
-          <p className="text-muted-foreground">
-            Explore and analyze KCET cutoff data across different years, colleges, and categories
-          </p>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-6 space-y-6 max-w-7xl">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold">Cutoff Explorer</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Explore and analyze KCET cutoff data across different years, colleges, and categories
+            </p>
+          </div>
         </div>
-      </div>
 
+        {/* Filters */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Filter className="h-5 w-5" />
+                Search & Filters
+              </CardTitle>
+              {isMobile && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="flex items-center gap-2"
+                >
+                  {showFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  {showFilters ? 'Hide' : 'Show'} Filters
+                </Button>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className={`space-y-4 ${isMobile && !showFilters ? 'hidden' : ''}`}>
+              {/* Search - always visible on mobile */}
+              <div className="space-y-2">
+                <Label htmlFor="search">Search</Label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="search"
+                    placeholder="College or branch name..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
 
+              {/* Filter Grid - responsive */}
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+                <div className="space-y-2">
+                  <Label>Year</Label>
+                  <Select value={selectedYear} onValueChange={setSelectedYear}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableYears.map((year) => (
+                        <SelectItem key={year} value={year}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-      {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
-            Search & Filters
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
-            <div className="space-y-2">
-              <Label htmlFor="search">Search</Label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="search"
-                  placeholder="College or branch name..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
+                <div className="space-y-2">
+                  <Label>Round</Label>
+                  <Select value={selectedRound} onValueChange={setSelectedRound}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select round" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableRounds.map((round) => (
+                        <SelectItem key={round} value={round}>
+                          {round === 'ALL' ? 'All Rounds' : getRoundDisplayName(round)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Institute</Label>
+                  <Select value={selectedInstitute || 'ALL'} onValueChange={(v) => setSelectedInstitute(v === 'ALL' ? '' : v)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select institute" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-72">
+                      <SelectItem value="ALL">All Institutes</SelectItem>
+                      {availableInstitutes.map((inst) => (
+                        <SelectItem key={inst} value={inst}>
+                          {inst}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Category</Label>
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableCategories.map((cat) => (
+                        <SelectItem key={cat} value={cat}>
+                          {cat === 'ALL' ? 'All Categories' : cat}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Course</Label>
+                  <Select value={selectedCourse || 'ALL'} onValueChange={(v) => setSelectedCourse(v === 'ALL' ? '' : v)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All courses" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-72">
+                      <SelectItem value="ALL">All Courses</SelectItem>
+                      {COURSES.map((c) => (
+                        <SelectItem key={c.code} value={c.code}>
+                          {c.code} — {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>&nbsp;</Label>
+                  <Button onClick={handleSearch} className="w-full">
+                    Search
+                  </Button>
+                </div>
               </div>
             </div>
-
-            <div className="space-y-2">
-              <Label>Year</Label>
-              <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select year" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableYears.map((year) => (
-                    <SelectItem key={year} value={year}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Round</Label>
-              <Select value={selectedRound} onValueChange={setSelectedRound}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select round" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableRounds.map((round) => (
-                    <SelectItem key={round} value={round}>
-                      {round === 'ALL' ? 'All Rounds' : getRoundDisplayName(round)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Institute</Label>
-              <Select value={selectedInstitute || 'ALL'} onValueChange={(v) => setSelectedInstitute(v === 'ALL' ? '' : v)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select institute" />
-                </SelectTrigger>
-                <SelectContent className="max-h-72">
-                  <SelectItem value="ALL">All Institutes</SelectItem>
-                  {availableInstitutes.map((inst) => (
-                    <SelectItem key={inst} value={inst}>
-                      {inst}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Category</Label>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableCategories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat === 'ALL' ? 'All Categories' : cat}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Course</Label>
-              <Select value={selectedCourse || 'ALL'} onValueChange={(v) => setSelectedCourse(v === 'ALL' ? '' : v)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All courses" />
-                </SelectTrigger>
-                <SelectContent className="max-h-72">
-                  <SelectItem value="ALL">All Courses</SelectItem>
-                  {COURSES.map((c) => (
-                    <SelectItem key={c.code} value={c.code}>
-                      {c.code} — {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="flex items-end gap-2 mt-4">
-              <Button onClick={handleSearch} className="flex-1">
-                Search
-              </Button>
-              <Button variant="outline" size="icon">
-                {/* <Download className="h-4 w-4" /> */}
-              </Button>
-            </div>
-        </CardContent>
-      </Card>
-
-      {/* Summary */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Results</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.total.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">Matching cutoff entries</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Institutes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.institutes}</div>
-            <p className="text-xs text-muted-foreground">Appearing in results</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Courses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.courses}</div>
-            <p className="text-xs text-muted-foreground">Distinct course codes</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Categories</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.categories}</div>
-            <p className="text-xs text-muted-foreground">Present in results</p>
-          </CardContent>
-        </Card>
-      </div>
 
-      {/* Results */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              {/* <TrendingUp className="h-5 w-5" /> */}
-              Cutoff Results ({stats.total} total, page {page})
-            </CardTitle>
-            <div className="flex gap-2">
-              <Badge variant="outline">{selectedYear}</Badge>
-              {selectedCategory && <Badge variant="outline">{selectedCategory.toUpperCase()}</Badge>}
+        {/* Summary */}
+        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">Results</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl sm:text-2xl font-bold">{stats.total.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground">Matching cutoff entries</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">Institutes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl sm:text-2xl font-bold">{stats.institutes}</div>
+              <p className="text-xs text-muted-foreground">Appearing in results</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">Courses</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl sm:text-2xl font-bold">{stats.courses}</div>
+              <p className="text-xs text-muted-foreground">Distinct course codes</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">Categories</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl sm:text-2xl font-bold">{stats.categories}</div>
+              <p className="text-xs text-muted-foreground">Present in results</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Results */}
+        <Card>
+          <CardHeader>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <CardTitle className="flex items-center gap-2">
+                Cutoff Results ({stats.total} total, page {page})
+              </CardTitle>
+              <div className="flex gap-2 flex-wrap">
+                <Badge variant="outline">{selectedYear}</Badge>
+                {selectedCategory && <Badge variant="outline">{selectedCategory.toUpperCase()}</Badge>}
+              </div>
             </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {errorMessage && (
-            <div className="mb-4 rounded-none border-2 border-destructive/40 bg-destructive/10 p-3 text-sm">
-              <div className="font-semibold">Data load failed</div>
-              <div className="opacity-80">{errorMessage}</div>
-            </div>
-          )}
-          {loading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="text-muted-foreground mt-2">Loading cutoffs...</p>
-            </div>
-          ) : cutoffs.length > 0 ? (
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Institute</TableHead>
-                    <TableHead>Course</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Round</TableHead>
-                    <TableHead className="text-right">Cutoff Rank</TableHead>
-                    <TableHead className="text-center">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+          </CardHeader>
+          <CardContent>
+            {errorMessage && (
+              <div className="mb-4 rounded-none border-2 border-destructive/40 bg-destructive/10 p-3 text-sm">
+                <div className="font-semibold">Data load failed</div>
+                <div className="opacity-80">{errorMessage}</div>
+              </div>
+            )}
+            {loading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                <p className="text-muted-foreground mt-2">Loading cutoffs...</p>
+              </div>
+            ) : cutoffs.length > 0 ? (
+              <div className="space-y-4">
+                {/* Desktop Table */}
+                <div className="hidden lg:block rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Institute</TableHead>
+                        <TableHead>Course</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Round</TableHead>
+                        <TableHead className="text-right">Cutoff Rank</TableHead>
+                        <TableHead className="text-center">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {cutoffs.map((cutoff, index) => (
+                        <TableRow key={`${cutoff.institute_code}-${cutoff.course}-${cutoff.category}-${index}`}>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium">{cutoff.institute}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {cutoff.institute_code}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium">{COURSE_CODE_TO_NAME[cutoff.course] || cutoff.course}</div>
+                              <div className="text-sm text-muted-foreground">{cutoff.course}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={getCategoryColor(cutoff.category)}>
+                              {cutoff.category?.toUpperCase()}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {cutoff.round}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right font-mono font-semibold">
+                            {cutoff.cutoff_rank?.toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <Button variant="ghost" size="sm">
+                              {/* <Eye className="h-4 w-4" /> */}
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {/* Mobile Cards */}
+                <div className="lg:hidden space-y-3">
                   {cutoffs.map((cutoff, index) => (
-                    <TableRow key={`${cutoff.institute_code}-${cutoff.course}-${cutoff.category}-${index}`}>
-                      <TableCell>
+                    <Card key={`${cutoff.institute_code}-${cutoff.course}-${cutoff.category}-${index}`} className="p-4">
+                      <div className="space-y-3">
                         <div>
-                          <div className="font-medium">{cutoff.institute}</div>
+                          <div className="font-medium text-lg">{cutoff.institute}</div>
                           <div className="text-sm text-muted-foreground">
                             {cutoff.institute_code}
                           </div>
                         </div>
-                      </TableCell>
-                      <TableCell>
+                        
                         <div>
                           <div className="font-medium">{COURSE_CODE_TO_NAME[cutoff.course] || cutoff.course}</div>
                           <div className="text-sm text-muted-foreground">{cutoff.course}</div>
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={getCategoryColor(cutoff.category)}>
-                          {cutoff.category?.toUpperCase()}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          {cutoff.round}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right font-mono font-semibold">
-                        {cutoff.cutoff_rank?.toLocaleString()}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Button variant="ghost" size="sm">
-                          {/* <Eye className="h-4 w-4" /> */}
-                        </Button>
-                      </TableCell>
-                    </TableRow>
+
+                        <div className="flex flex-wrap gap-2">
+                          <Badge className={getCategoryColor(cutoff.category)}>
+                            {cutoff.category?.toUpperCase()}
+                          </Badge>
+                          <Badge variant="outline">
+                            {cutoff.round}
+                          </Badge>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">Cutoff Rank:</span>
+                          <span className="font-mono font-semibold text-lg">
+                            {cutoff.cutoff_rank?.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    </Card>
                   ))}
-                </TableBody>
-              </Table>
-              {/* Pagination */}
-              <div className="flex items-center justify-between p-3">
-                <div className="text-sm text-muted-foreground">Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, stats.total)} of {stats.total}</div>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1}>Prev</Button>
-                  <Button variant="outline" size="sm" onClick={() => setPage(page * pageSize < stats.total ? page + 1 : page)} disabled={page * pageSize >= stats.total}>Next</Button>
+                </div>
+
+                {/* Pagination */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-3 border-t">
+                  <div className="text-sm text-muted-foreground text-center sm:text-left">
+                    Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, stats.total)} of {stats.total}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => setPage(Math.max(1, page - 1))} 
+                      disabled={page === 1}
+                    >
+                      Prev
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => setPage(page * pageSize < stats.total ? page + 1 : page)} 
+                      disabled={page * pageSize >= stats.total}
+                    >
+                      Next
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No cutoffs found</h3>
-              <p className="text-muted-foreground">Try adjusting your search criteria</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            ) : (
+              <div className="text-center py-8">
+                <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No cutoffs found</h3>
+                <p className="text-muted-foreground">Try adjusting your search criteria</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Calculator, Search, Target, Shuffle, Bell, Table, GitCompare, FileText, DollarSign, BarChart3, BookOpen, Star, Home, FileSpreadsheet, ClipboardList } from "lucide-react"
+import { Calculator, Search, Target, Shuffle, Bell, Table, GitCompare, FileText, DollarSign, BarChart3, BookOpen, Star, Home, FileSpreadsheet, ClipboardList, ExternalLink } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import {
   Sidebar,
@@ -28,6 +28,7 @@ const menuItems = [
   { title: "Strategy Guide", url: "/strategy", icon: BookOpen },
   { title: "Reviews", url: "/reviews", icon: Star },
   { title: "XLSX Demo", url: "/xlsx-demo", icon: FileSpreadsheet },
+  { title: "Reddit Community", url: "https://www.reddit.com/r/kcet/", icon: ExternalLink, external: true },
 ]
 
 export function AppSidebar() {
@@ -45,19 +46,31 @@ export function AppSidebar() {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      className={({ isActive }) => 
-                        `flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors text-sidebar-foreground ${
-                          isActive 
-                            ? "bg-primary text-primary-foreground font-medium" 
-                            : "hover:bg-accent hover:text-accent-foreground"
-                        }`
-                      }
-                    >
-                      <item.icon className="h-4 w-4 flex-shrink-0" />
-                      {state !== "collapsed" && <span className="truncate">{item.title}</span>}
-                    </NavLink>
+                    {item.external ? (
+                      <a 
+                        href={item.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors text-sidebar-foreground hover:bg-accent hover:text-accent-foreground"
+                      >
+                        <item.icon className="h-4 w-4 flex-shrink-0" />
+                        {state !== "collapsed" && <span className="truncate">{item.title}</span>}
+                      </a>
+                    ) : (
+                      <NavLink 
+                        to={item.url} 
+                        className={({ isActive }) => 
+                          `flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors text-sidebar-foreground ${
+                            isActive 
+                              ? "bg-primary text-primary-foreground font-medium" 
+                              : "hover:bg-accent hover:text-accent-foreground"
+                          }`
+                        }
+                      >
+                        <item.icon className="h-4 w-4 flex-shrink-0" />
+                        {state !== "collapsed" && <span className="truncate">{item.title}</span>}
+                      </NavLink>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

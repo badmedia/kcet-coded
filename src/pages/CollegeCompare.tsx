@@ -1,28 +1,30 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+import { Construction, Clock, Scale } from "lucide-react"
 
 const CollegeCompare = () => {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">College Compare</h1>
-        <p className="text-muted-foreground">Contrast colleges side-by-side with cutoffs, fees, and ratings.</p>
+        <p className="text-muted-foreground">Contrast colleges side-by-side with cutoffs, fees, and ratings</p>
       </div>
 
-      <Card className="rounded-none border-2 shadow-[6px_6px_0_0_rgba(0,0,0,0.35)] dark:shadow-[6px_6px_0_0_rgba(255,255,255,0.12)]">
+      <Card className="border-orange-200 bg-orange-50">
         <CardHeader>
-          <CardTitle>Pick Colleges</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-orange-800">
+            <Construction className="h-5 w-5" />
+            Under Development
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="h-32 bg-muted" />
-            <div className="h-32 bg-muted" />
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-3 text-orange-800">
+            <Clock className="h-5 w-5" />
+            <p className="font-medium">This feature is currently under development and will be rolling out soon.</p>
           </div>
-          <Separator className="my-6" />
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="h-48 bg-muted" />
-            <div className="h-48 bg-muted" />
-          </div>
+          <p className="text-sm text-orange-700">
+            College Compare will allow you to compare multiple colleges side-by-side with detailed 
+            information about cutoffs, fees, placements, and other important factors.
+          </p>
         </CardContent>
       </Card>
     </div>
@@ -30,5 +32,3 @@ const CollegeCompare = () => {
 }
 
 export default CollegeCompare
-
-

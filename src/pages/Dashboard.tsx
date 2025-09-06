@@ -13,7 +13,8 @@ import {
   Target,
   Calculator,
   BookOpen,
-  Star
+  Star,
+  ExternalLink
 } from "lucide-react"
 import { Link } from "react-router-dom"
 
@@ -245,6 +246,37 @@ const Dashboard = () => {
               No news yet. Add items to <code>public/data/news.json</code> to display updates with images (Reddit image URLs supported).
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Reddit Community */}
+      <Card className="border-orange-200 bg-orange-50 dark:bg-orange-950">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-lg">r/</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-orange-800 dark:text-orange-200">KCET Community</h3>
+                <p className="text-sm text-orange-700 dark:text-orange-300">Visit r/kcet for more answers and discussions</p>
+              </div>
+            </div>
+            <Button 
+              asChild 
+              className="bg-orange-500 hover:bg-orange-600 text-white"
+            >
+              <a 
+                href="https://www.reddit.com/r/kcet/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Visit Reddit
+              </a>
+            </Button>
+          </div>
         </CardContent>
       </Card>
 

@@ -9,8 +9,9 @@ import { Badge } from "@/components/ui/badge"
 import { Slider } from "@/components/ui/slider"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Search, MapPin, GraduationCap, TrendingUp, Star, Users, Check, ChevronsUpDown, FileSpreadsheet, Trash2, FileText, AlertCircle } from "lucide-react"
+import { Search, MapPin, GraduationCap, TrendingUp, Star, Users, Check, ChevronsUpDown, FileSpreadsheet, Trash2, FileText, AlertCircle, Info, ChevronDown, ChevronUp } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { XLSXLoader } from "@/lib/xlsx-loader"
 
 interface CutoffData {
@@ -76,8 +77,9 @@ const CollegeFinder = () => {
   const [minRank, setMinRank] = useState<number>(1)
   const [maxRank, setMaxRank] = useState<number>(300000)
   const [collegeSearchTerm, setCollegeSearchTerm] = useState("")
+  const [showFilters, setShowFilters] = useState(false)
 
-  
+  const isMobile = useIsMobile()
   const { toast } = useToast()
 
   // Mapping: course codes to canonical names (normalized display) - EXACT MATCHING
@@ -1071,38 +1073,53 @@ const CollegeFinder = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">College Finder</h1>
-          <p className="text-muted-foreground">Find the best colleges based on your KCET rank and preferences</p>
-        </div>
-        <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground mt-2">Loading college data from consolidated data source...</p>
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-6 space-y-6 max-w-7xl">
+          <div className="space-y-2">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">College Finder</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">Find the best colleges based on your KCET rank and preferences</p>
+          </div>
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="text-muted-foreground mt-2">Loading college data from consolidated data source...</p>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">College Finder</h1>
-        <p className="text-muted-foreground">Find the best colleges based on your KCET rank and preferences</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-6 space-y-6 max-w-7xl">
+        <div className="space-y-2">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">College Finder</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Find the best colleges based on your KCET rank and preferences</p>
+        </div>
 
-
-
-      {/* Search Criteria */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="h-5 w-5" />
-            Search Criteria
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Search Criteria */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Search className="h-5 w-5" />
+                Search Criteria
+              </CardTitle>
+              {isMobile && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="flex items-center gap-2"
+                >
+                  {showFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  {showFilters ? 'Hide' : 'Show'} Filters
+                </Button>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className={`space-y-6 ${isMobile && !showFilters ? 'hidden' : ''}`}>
+              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {/* Rank Input */}
             <div className="space-y-2">
               <Label htmlFor="rank">Your KCET Rank</Label>
@@ -1215,292 +1232,376 @@ const CollegeFinder = () => {
               </div>
             </div>
 
-            {/* Search Button */}
-            <div className="flex items-end gap-2">
-              <Button 
-                onClick={findColleges} 
-                disabled={searching || !userCategory || !selectedYear || !selectedRound}
-                className="flex-1"
-              >
-                {searching ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Finding Colleges...
-                  </>
-                ) : (
-                  <>
-                    <Search className="h-4 w-4 mr-2" />
-                    Find Colleges
-                  </>
-                )}
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => {
-                  setUserRank(50000)
-                  setUserCategory("")
-                  setSelectedYear("")
-                  setSelectedRound("")
-                  setSelectedInstitute("")
-                  setSelectedCourses([])
-                  setLocationFilter("")
-                  setMinRank(1)
-                  setMaxRank(300000)
-                  setMatches([])
-                  setCollegeSearchTerm("")
-                }}
-                className="px-3"
-                title="Clear all filters"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={loadFromXLSX}
-                className="px-3"
-                title="Load from XLSX files"
-              >
-                <FileSpreadsheet className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-
-
-          {/* Course Selection - searchable multi-select */}
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-2">
-              <Label className="text-base font-medium">Select Courses (Optional)</Label>
-              {selectedCourses.length > 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSelectedCourses([])}
-                  className="text-xs"
-                >
-                  <Trash2 className="h-3 w-3 mr-1" />
-                  Clear All
-                </Button>
-              )}
-            </div>
-            <div className="mt-2">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between">
-                    {selectedCourses.length > 0 ? `${selectedCourses.length} selected` : 'Search & select courses'}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
+                {/* Search Button */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:col-span-2 lg:col-span-3">
+                  <Button 
+                    onClick={findColleges} 
+                    disabled={searching || !userCategory || !selectedYear || !selectedRound}
+                    className="flex-1"
+                  >
+                    {searching ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Finding Colleges...
+                      </>
+                    ) : (
+                      <>
+                        <Search className="h-4 w-4 mr-2" />
+                        Find Colleges
+                      </>
+                    )}
                   </Button>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 w-[min(700px,90vw)]">
-                  <Command>
-                    <CommandInput placeholder="Search courses..." />
-                    <CommandEmpty>No courses found.</CommandEmpty>
-                    <CommandList>
-                      <CommandGroup>
-                        {availableCourses.map((course) => {
-                          const isSelected = selectedCourses.includes(course)
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        setUserRank(50000)
+                        setUserCategory("")
+                        setSelectedYear("")
+                        setSelectedRound("")
+                        setSelectedInstitute("")
+                        setSelectedCourses([])
+                        setLocationFilter("")
+                        setMinRank(1)
+                        setMaxRank(300000)
+                        setMatches([])
+                        setCollegeSearchTerm("")
+                      }}
+                      className="px-3"
+                      title="Clear all filters"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={loadFromXLSX}
+                      className="px-3"
+                      title="Load from XLSX files"
+                    >
+                      <FileSpreadsheet className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+
+
+              {/* Course Selection - searchable multi-select */}
+              <div className="mt-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <Label className="text-base font-medium">Select Courses (Optional)</Label>
+                    <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200">
+                      BETA
+                    </Badge>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80">
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-orange-800">Course Selection Beta</h4>
+                          <p className="text-sm text-muted-foreground">
+                            This feature is still in development and may have some issues:
+                          </p>
+                          <ul className="text-sm text-muted-foreground space-y-1 ml-4">
+                            <li>• Some courses may not be properly mapped</li>
+                            <li>• Course matching might be inconsistent</li>
+                            <li>• Data accuracy may vary</li>
+                          </ul>
+                          <p className="text-xs text-muted-foreground">
+                            We're working to improve course mapping and data accuracy.
+                          </p>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  {selectedCourses.length > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedCourses([])}
+                      className="text-xs self-start sm:self-auto"
+                    >
+                      <Trash2 className="h-3 w-3 mr-1" />
+                      Clear All
+                    </Button>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full justify-between">
+                        {selectedCourses.length > 0 ? `${selectedCourses.length} selected` : 'Search & select courses'}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 w-[min(700px,90vw)]">
+                      <Command>
+                        <CommandInput placeholder="Search courses..." />
+                        <CommandEmpty>No courses found.</CommandEmpty>
+                        <CommandList>
+                          <CommandGroup>
+                            {availableCourses.map((course) => {
+                              const isSelected = selectedCourses.includes(course)
+                              const courseCode = getCourseCode(course)
+                              return (
+                                <CommandItem
+                                  key={course}
+                                  value={course}
+                                  onSelect={() => {
+                                    if (isSelected) {
+                                      setSelectedCourses(selectedCourses.filter(c => c !== course))
+                                    } else {
+                                      setSelectedCourses([...selectedCourses, course])
+                                    }
+                                  }}
+                                >
+                                  <Check className={`mr-2 h-4 w-4 ${isSelected ? 'opacity-100' : 'opacity-0'}`} />
+                                  <div className="flex items-center gap-2">
+                                    {courseCode && (
+                                      <Badge variant="secondary" className="text-xs font-mono">
+                                        {courseCode}
+                                      </Badge>
+                                    )}
+                                    <span className="truncate">{course}</span>
+                                  </div>
+                                </CommandItem>
+                              )
+                            })}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  {selectedCourses.length > 0 && (
+                    <div className="mt-2 text-sm text-muted-foreground">
+                      <div className="flex flex-wrap gap-1">
+                        {selectedCourses.map(course => {
                           const courseCode = getCourseCode(course)
                           return (
-                            <CommandItem
-                              key={course}
-                              value={course}
-                              onSelect={() => {
-                                if (isSelected) {
-                                  setSelectedCourses(selectedCourses.filter(c => c !== course))
-                                } else {
-                                  setSelectedCourses([...selectedCourses, course])
-                                }
-                              }}
-                            >
-                              <Check className={`mr-2 h-4 w-4 ${isSelected ? 'opacity-100' : 'opacity-0'}`} />
-                              <div className="flex items-center gap-2">
-                                {courseCode && (
-                                  <Badge variant="secondary" className="text-xs font-mono">
-                                    {courseCode}
-                                  </Badge>
-                                )}
-                                <span>{course}</span>
-                              </div>
-                            </CommandItem>
+                            <span key={course} className="text-xs bg-muted px-2 py-1 rounded">
+                              {courseCode ? `${courseCode}: ${course}` : course}
+                            </span>
                           )
                         })}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              {selectedCourses.length > 0 && (
-                <div className="mt-2 text-sm text-muted-foreground">
-                  {selectedCourses.map(course => {
-                    const courseCode = getCourseCode(course)
-                    return courseCode ? `${courseCode}: ${course}` : course
-                  }).join(', ')}
-                </div>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Results */}
-      {matches.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <GraduationCap className="h-5 w-5" />
-              College Matches ({matches.length} found)
-            </CardTitle>
-            <div className="text-sm text-muted-foreground space-y-2">
-              <p>
-                <strong>How to read results:</strong> Colleges are shown where the cutoff rank is <strong>higher than your rank ({userRank.toLocaleString()})</strong>.
-              </p>
-              <p>
-                <strong>Results sorted by cutoff rank:</strong> Closest cutoff above your rank appears first, then in ascending order.
-              </p>
-              <p>
-                <strong>Example for rank {userRank.toLocaleString()}:</strong> Cutoff 70,740 → 71,000 → 72,000 → 75,000...
-              </p>
-            </div>
-            
-            {/* Search Bar for Found Colleges */}
-            <div className="mt-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search colleges by name, code, or rank..."
-                  value={collegeSearchTerm}
-                  onChange={(e) => setCollegeSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Search among found colleges by college name, institute code, or cutoff rank
-              </p>
-            </div>
-          </CardHeader>
-                    <CardContent>
-            {/* Filter matches based on search term */}
-            {(() => {
-              const filteredMatches = collegeSearchTerm 
-                ? matches.filter(match => {
-                    const searchTerm = collegeSearchTerm.toLowerCase().trim()
-                    
-                    // Search by college name
-                    if (match.institute.toLowerCase().includes(searchTerm)) {
-                      return true
-                    }
-                    
-                    // Search by institute code
-                    if (match.institute_code.toLowerCase().includes(searchTerm)) {
-                      return true
-                    }
-                    
-                    // Search by cutoff rank
-                    if (match.cutoff_rank.toString().includes(searchTerm)) {
-                      return true
-                    }
-                    
-                    // Search by course name
-                    if (match.course.toLowerCase().includes(searchTerm)) {
-                      return true
-                    }
-                    
-                    return false
-                  })
-                : matches
-              
-              return (
-                <div className="space-y-4">
-                  {collegeSearchTerm && (
-                    <div className="text-sm text-muted-foreground">
-                      Showing {filteredMatches.length} of {matches.length} colleges matching "{collegeSearchTerm}"
+                      </div>
                     </div>
                   )}
-                  <div className="rounded-md border">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>College</TableHead>
-                          <TableHead>Course</TableHead>
-                          <TableHead>Category</TableHead>
-                          <TableHead>Cutoff Rank</TableHead>
-                          <TableHead>Match Score</TableHead>
-                          <TableHead>Safety Level</TableHead>
-                          <TableHead>Year</TableHead>
-                          <TableHead>Round</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredMatches.map((match, index) => (
-                          <TableRow key={`${match.institute_code}-${match.course}-${index}`}>
-                            <TableCell>
-                              <div>
-                                <div className="font-medium">{match.institute}</div>
-                                <div className="text-sm text-muted-foreground">
-                                  {match.institute_code}
-                                </div>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div>
-                                <div className="font-medium">{match.course}</div>
-                                {getCourseCode(match.course) && (
-                                  <div className="text-sm text-muted-foreground font-mono">
-                                    {getCourseCode(match.course)}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Results */}
+        {matches.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <GraduationCap className="h-5 w-5" />
+                College Matches ({matches.length} found)
+              </CardTitle>
+              <div className="text-sm text-muted-foreground space-y-2">
+                <p>
+                  <strong>How to read results:</strong> Colleges are shown where the cutoff rank is <strong>higher than your rank ({userRank.toLocaleString()})</strong>.
+                </p>
+              </div>
+              
+              {/* Search Bar for Found Colleges */}
+              <div className="mt-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search colleges by name, code, or rank..."
+                    value={collegeSearchTerm}
+                    onChange={(e) => setCollegeSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Search among found colleges by college name, institute code, or cutoff rank
+                </p>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {/* Filter matches based on search term */}
+              {(() => {
+                const filteredMatches = collegeSearchTerm 
+                  ? matches.filter(match => {
+                      const searchTerm = collegeSearchTerm.toLowerCase().trim()
+                      
+                      // Search by college name
+                      if (match.institute.toLowerCase().includes(searchTerm)) {
+                        return true
+                      }
+                      
+                      // Search by institute code
+                      if (match.institute_code.toLowerCase().includes(searchTerm)) {
+                        return true
+                      }
+                      
+                      // Search by cutoff rank
+                      if (match.cutoff_rank.toString().includes(searchTerm)) {
+                        return true
+                      }
+                      
+                      // Search by course name
+                      if (match.course.toLowerCase().includes(searchTerm)) {
+                        return true
+                      }
+                      
+                      return false
+                    })
+                  : matches
+                
+                return (
+                  <div className="space-y-4">
+                    {collegeSearchTerm && (
+                      <div className="text-sm text-muted-foreground">
+                        Showing {filteredMatches.length} of {matches.length} colleges matching "{collegeSearchTerm}"
+                      </div>
+                    )}
+                    
+                    {/* Desktop Table */}
+                    <div className="hidden lg:block rounded-md border">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>College</TableHead>
+                            <TableHead>Course</TableHead>
+                            <TableHead>Category</TableHead>
+                            <TableHead>Cutoff Rank</TableHead>
+                            <TableHead>Match Score</TableHead>
+                            <TableHead>Safety Level</TableHead>
+                            <TableHead>Year</TableHead>
+                            <TableHead>Round</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredMatches.map((match, index) => (
+                            <TableRow key={`${match.institute_code}-${match.course}-${index}`}>
+                              <TableCell>
+                                <div>
+                                  <div className="font-medium">{match.institute}</div>
+                                  <div className="text-sm text-muted-foreground">
+                                    {match.institute_code}
                                   </div>
-                                )}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div>
+                                  <div className="font-medium">{match.course}</div>
+                                  {getCourseCode(match.course) && (
+                                    <div className="text-sm text-muted-foreground font-mono">
+                                      {getCourseCode(match.course)}
+                                    </div>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{match.category}</Badge>
+                              </TableCell>
+                              <TableCell className="font-mono font-semibold">
+                                {match.cutoff_rank.toLocaleString()}
+                              </TableCell>
+                              <TableCell>
+                                <div className={`font-semibold ${getMatchColor(match.matchScore)}`}>
+                                  {match.matchScore}%
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <Badge className={getSafetyColor(match.safetyLevel)}>
+                                  {match.safetyLevel}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">
+                                  {match.year}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">
+                                  {getRoundDisplayName(match.round)}
+                                </Badge>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+
+                    {/* Mobile Cards */}
+                    <div className="lg:hidden space-y-3">
+                      {filteredMatches.map((match, index) => (
+                        <Card key={`${match.institute_code}-${match.course}-${index}`} className="p-4">
+                          <div className="space-y-3">
+                            <div>
+                              <div className="font-medium text-lg">{match.institute}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {match.institute_code}
                               </div>
-                            </TableCell>
-                            <TableCell>
+                            </div>
+                            
+                            <div>
+                              <div className="font-medium">{match.course}</div>
+                              {getCourseCode(match.course) && (
+                                <div className="text-sm text-muted-foreground font-mono">
+                                  {getCourseCode(match.course)}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="flex flex-wrap gap-2">
                               <Badge variant="outline">{match.category}</Badge>
-                            </TableCell>
-                            <TableCell className="font-mono font-semibold">
-                              {match.cutoff_rank.toLocaleString()}
-                            </TableCell>
-                            <TableCell>
+                              <Badge variant="outline">{match.year}</Badge>
+                              <Badge variant="outline">{getRoundDisplayName(match.round)}</Badge>
+                            </div>
+
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm text-muted-foreground">Cutoff Rank:</span>
+                              <span className="font-mono font-semibold text-lg">
+                                {match.cutoff_rank.toLocaleString()}
+                              </span>
+                            </div>
+
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm text-muted-foreground">Match Score:</span>
                               <div className={`font-semibold ${getMatchColor(match.matchScore)}`}>
                                 {match.matchScore}%
                               </div>
-                            </TableCell>
-                            <TableCell>
+                            </div>
+
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm text-muted-foreground">Safety Level:</span>
                               <Badge className={getSafetyColor(match.safetyLevel)}>
                                 {match.safetyLevel}
                               </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="outline">
-                                {match.year}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="outline">
-                                {getRoundDisplayName(match.round)}
-                              </Badge>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )
-            })()}
-          </CardContent>
-        </Card>
-      )}
+                )
+              })()}
+            </CardContent>
+          </Card>
+        )}
 
-      {/* No Results */}
-      {!loading && !searching && matches.length === 0 && (
-        <Card>
-          <CardContent className="text-center py-8">
-            <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No colleges found</h3>
-            <p className="text-muted-foreground">Try adjusting your search criteria or rank range</p>
-          </CardContent>
-        </Card>
-      )}
-
-
+        {/* No Results */}
+        {!loading && !searching && matches.length === 0 && (
+          <Card>
+            <CardContent className="text-center py-8">
+              <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No colleges found</h3>
+              <p className="text-muted-foreground">Try adjusting your search criteria or rank range</p>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   )
 }

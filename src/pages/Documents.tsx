@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { FileText, CheckCircle, AlertCircle, Copy, FileCheck } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { FileText, CheckCircle, AlertCircle, Copy, FileCheck, AlertTriangle, TriangleAlert } from "lucide-react"
 
 const Documents = () => {
   const documentCategories = [
@@ -10,30 +11,30 @@ const Documents = () => {
       documents: [
         {
           name: "SSLC/10th Standard Marks Card",
-          type: "Original",
-          copies: 1,
-          description: "Original marks card or equivalent certificate",
+          type: "Original + Copies",
+          copies: 4,
+          description: "Original marks card or equivalent certificate + 3 copies + 1 for own reference",
           required: true
         },
         {
           name: "2nd PUC/12th Standard Marks Card",
-          type: "Original",
-          copies: 1,
-          description: "Original marks card or equivalent certificate",
+          type: "Original + Copies",
+          copies: 4,
+          description: "Original marks card or equivalent certificate + 3 copies + 1 for own reference",
           required: true
         },
         {
           name: "12th Standard Study Certificate",
-          type: "Original",
-          copies: 1,
-          description: "Must include SSLC or 2nd PUC/12th std details, combined into single PDF",
+          type: "Original + Copies",
+          copies: 4,
+          description: "Must include SSLC or 2nd PUC/12th std details, combined into single PDF + 3 copies + 1 for own reference",
           required: true
         },
         {
           name: "12th Standard Transfer Certificate",
-          type: "Original",
-          copies: 1,
-          description: "Transfer certificate from the last institution attended",
+          type: "Original + Copies",
+          copies: 4,
+          description: "Transfer certificate from the last institution attended + 3 copies + 1 for own reference",
           required: true
         }
       ]
@@ -44,36 +45,36 @@ const Documents = () => {
         {
           name: "KEA UGCET/UG-NEET 2025 Verification Slip",
           type: "Copy",
-          copies: 1,
-          description: "Official verification slip from KEA",
+          copies: 4,
+          description: "Official verification slip from KEA + 3 copies + 1 for own reference",
           required: true
         },
         {
           name: "KEA UGCET/UG-NEET 2025 Online Application Form",
           type: "Copy",
-          copies: 1,
-          description: "Complete online application form",
+          copies: 4,
+          description: "Complete online application form + 3 copies + 1 for own reference",
           required: true
         },
         {
           name: "CET/NEET 2025 Admission Ticket",
           type: "Copy",
-          copies: 1,
-          description: "Original admission ticket for the entrance exam",
+          copies: 4,
+          description: "Original admission ticket for the entrance exam + 3 copies + 1 for own reference",
           required: true
         },
         {
           name: "Confirmation Slip",
           type: "Copy",
-          copies: 1,
-          description: "Confirmation slip from the application process",
+          copies: 4,
+          description: "Confirmation slip from the application process + 3 copies + 1 for own reference",
           required: true
         },
         {
           name: "Fee Receipt",
-          type: "Original",
-          copies: 1,
-          description: "Original fee payment receipt",
+          type: "Original + Copies",
+          copies: 4,
+          description: "Original fee payment receipt + 3 copies + 1 for own reference",
           required: true
         }
       ]
@@ -83,23 +84,23 @@ const Documents = () => {
       documents: [
         {
           name: "Photo Identity Proof",
-          type: "Original + Copy",
-          copies: 1,
-          description: "PAN Card, Driving License, Voter ID, Passport, or Aadhaar Card",
+          type: "Original + Copies",
+          copies: 4,
+          description: "PAN Card, Driving License, Voter ID, Passport, or Aadhaar Card + 3 copies + 1 for own reference",
           required: true
         },
         {
           name: "Aadhaar Card",
           type: "Copy",
-          copies: 1,
-          description: "Copy of Aadhaar card for verification",
+          copies: 4,
+          description: "Copy of Aadhaar card for verification + 3 copies + 1 for own reference",
           required: true
         },
         {
           name: "Passport Size Photos",
           type: "Original",
-          copies: 2,
-          description: "Recent passport size photographs",
+          copies: 8,
+          description: "Recent passport size photographs (minimum 8 photos required)",
           required: true
         }
       ]
@@ -110,22 +111,22 @@ const Documents = () => {
         {
           name: "Caste/Income Certificate",
           type: "Copy",
-          copies: 1,
-          description: "For SC/ST (Form-D), Cat-1 (Form-E), 2A, 2B, 3A & 3B (Form-F). Must be issued by concerned Tahsildar of Karnataka",
+          copies: 4,
+          description: "For SC/ST (Form-D), Cat-1 (Form-E), 2A, 2B, 3A & 3B (Form-F). Must be issued by concerned Tahsildar of Karnataka + 3 copies + 1 for own reference",
           required: false
         },
         {
           name: "Hyd-Karnataka / 371(j) Certificate",
           type: "Copy",
-          copies: 1,
-          description: "Certificate issued by competent authority for claiming reservation under 371(j) (Annexure-A)",
+          copies: 4,
+          description: "Certificate issued by competent authority for claiming reservation under 371(j) (Annexure-A) + 3 copies + 1 for own reference",
           required: false
         },
         {
           name: "Rural Certificate",
           type: "Copy",
-          copies: 1,
-          description: "For candidates claiming rural reservation benefits",
+          copies: 4,
+          description: "For candidates claiming rural reservation benefits + 3 copies + 1 for own reference",
           required: false
         }
       ]
@@ -140,6 +141,26 @@ const Documents = () => {
         <h1 className="text-3xl font-bold tracking-tight">Documents</h1>
         <p className="text-muted-foreground">Complete list of documents required for KCET/UG-NEET 2025 admission process.</p>
       </div>
+
+      {/* CRITICAL COPY REQUIREMENT WARNING */}
+      <Alert className="border-red-500 bg-red-50 dark:bg-red-950">
+        <TriangleAlert className="h-6 w-6 text-red-600" />
+        <AlertDescription className="text-red-800 dark:text-red-200">
+          <div className="space-y-2">
+            <div className="text-lg font-bold">⚠️ CRITICAL: COPY REQUIREMENTS ⚠️</div>
+            <div className="text-base font-semibold">
+              AT LEAST 3 COPIES OF EACH DOCUMENT + 1 FOR OWN REFERENCE = 4 COPIES TOTAL
+            </div>
+            <div className="text-sm">
+              • Original documents must be submitted<br/>
+              • 3 copies for official submission<br/>
+              • 1 additional copy for your personal records<br/>
+              • Total: 4 copies of each document required
+            </div>
+          </div>
+        </AlertDescription>
+      </Alert>
+
 
       <div className="space-y-6">
         {documentCategories.map((category, categoryIndex) => (
@@ -197,6 +218,21 @@ const Documents = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3 text-sm">
+              <div className="flex items-start gap-2">
+                <TriangleAlert className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
+                <p className="font-bold text-red-800">MANDATORY: 4 COPIES OF EACH DOCUMENT (3 for submission + 1 for own reference)</p>
+              </div>
+              <div className="flex items-start gap-2">
+                <AlertCircle className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
+                <p className="font-semibold text-orange-800">IMPORTANT: This list might not include every possible academic document. Please cross-check with official sources and take ALL academic documents you have, including:</p>
+              </div>
+              <div className="ml-6 space-y-1 text-sm text-muted-foreground">
+                <p>• Additional mark sheets or certificates</p>
+                <p>• Migration certificates</p>
+                <p>• Character certificates</p>
+                <p>• Provisional certificates</p>
+                <p>• Any other academic documents from your educational journey</p>
+              </div>
               <div className="flex items-start gap-2">
                 <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                 <p>All documents mentioned above must be arranged in the same order as listed</p>

@@ -166,7 +166,7 @@ const RankPredictor = () => {
           <Crown className="h-8 w-8 text-primary" />
         </div>
         <div>
-          <h1 className="text-4xl font-bold tracking-tight">KCET 2025 Elite Predictor</h1>
+          <h1 className="text-4xl font-bold tracking-tight">KCET 2025 Rank Predictor</h1>
           <p className="text-muted-foreground mt-2">Unleash your potential with cutting-edge rank predictions!</p>
         </div>
       </div>
@@ -254,9 +254,10 @@ const RankPredictor = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <Label>KCET PCM (0-180)</Label>
-                      <div className="text-center">
-                        <div className="w-24 h-24 mx-auto bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
-                          {kcetMarks}
+                      <div className="space-y-3">
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-4 text-center">
+                          <div className="text-3xl font-bold text-blue-700 mb-1">{kcetMarks}</div>
+                          <div className="text-sm text-blue-600 font-medium">out of 180</div>
                         </div>
                         <input
                           type="range"
@@ -264,15 +265,16 @@ const RankPredictor = () => {
                           max="180"
                           value={kcetMarks}
                           onChange={(e) => setKcetMarks(Number(e.target.value))}
-                          className="w-full mt-2"
+                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                         />
                       </div>
                     </div>
                     <div className="space-y-4">
                       <Label>PUC PCM % (0-100)</Label>
-                      <div className="text-center">
-                        <div className="w-24 h-24 mx-auto bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
-                          {pucPercentage}
+                      <div className="space-y-3">
+                        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-lg p-4 text-center">
+                          <div className="text-3xl font-bold text-emerald-700 mb-1">{pucPercentage}%</div>
+                          <div className="text-sm text-emerald-600 font-medium">PUC Percentage</div>
                         </div>
                         <input
                           type="range"
@@ -280,7 +282,7 @@ const RankPredictor = () => {
                           max="100"
                           value={pucPercentage}
                           onChange={(e) => setPucPercentage(Number(e.target.value))}
-                          className="w-full mt-2"
+                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                         />
                       </div>
                     </div>
@@ -306,11 +308,12 @@ const RankPredictor = () => {
             <div className="space-y-4">
               <Card className="bg-gradient-to-br from-purple-600 via-indigo-700 to-blue-800 text-white shadow-xl">
                 <CardContent className="p-6 text-center">
-                  <h3 className="text-xl font-semibold mb-4">Your Elite Rank</h3>
-                  <div className="w-32 h-32 mx-auto bg-gradient-to-br from-white/30 to-white/10 rounded-full flex items-center justify-center mb-4 shadow-inner border border-white/20">
-                    <span className="text-3xl font-bold text-white drop-shadow-lg">
+                  <h3 className="text-xl font-semibold mb-4">Your Predicted Rank</h3>
+                  <div className="bg-gradient-to-r from-white/20 to-white/10 border-2 border-white/30 rounded-xl p-6 mb-4 shadow-inner">
+                    <div className="text-4xl font-bold text-white drop-shadow-lg mb-2">
                       {prediction ? prediction.medium.toLocaleString() : '---'}
-                    </span>
+                    </div>
+                    <div className="text-sm text-white/80 font-medium">Predicted Rank</div>
                   </div>
                   {prediction && (
                     <div className="space-y-2 text-sm">
