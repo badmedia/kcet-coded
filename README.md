@@ -230,8 +230,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For support, questions, or feature requests:
 - Create an issue on [GitHub](https://github.com/badmedia/kcet-coded/issues)
-- Email: [your-email@domain.com]
-
 ---
 
 **Made with ❤️ for KCET aspirants**
