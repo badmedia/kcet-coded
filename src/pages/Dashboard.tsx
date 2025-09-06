@@ -24,7 +24,6 @@ interface DataStats {
   totalBranches: number
   years: { [key: string]: number }
   categories: { [key: string]: number }
-  topColleges: Array<{ code: string; name: string; count: number }>
   topBranches: Array<{ code: string; name: string; count: number }>
   seatTypes: { [key: string]: number }
 }
@@ -90,10 +89,6 @@ const Dashboard = () => {
           }
         })
         
-        const topColleges = Array.from(colleges.values())
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 5)
-        
         const topBranches = Array.from(branches.values())
           .sort((a, b) => b.count - a.count)
           .slice(0, 5)
@@ -104,7 +99,6 @@ const Dashboard = () => {
           totalBranches: branches.size,
           years,
           categories,
-          topColleges,
           topBranches,
           seatTypes: rounds // Using rounds instead of seatTypes
         })
@@ -416,33 +410,6 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Top Colleges */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <GraduationCap className="h-5 w-5" />
-                Top Colleges
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {stats.topColleges.map((college, index) => (
-                  <div key={college.code} className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">
-                        {index + 1}
-                      </div>
-                      <div>
-                        <div className="font-medium text-sm">{college.name}</div>
-                        <div className="text-xs text-muted-foreground">{college.code}</div>
-                      </div>
-                    </div>
-                    <Badge variant="secondary">{college.count}</Badge>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Top Branches */}
           <Card>

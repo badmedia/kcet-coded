@@ -313,6 +313,23 @@ const CutoffExplorer = () => {
           </div>
         </div>
 
+        {/* Disclaimer */}
+        <Card className="border-orange-200 bg-orange-50">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+              <div className="text-sm text-orange-800">
+                <p className="font-medium mb-1">Important Disclaimer</p>
+                <p>
+                  Please cross-check all cutoff data with the official KCET PDFs from KEA website. 
+                  Our filtering system might miss an entry or two, so always verify critical information 
+                  from the original source documents.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Filters */}
         <Card>
           <CardHeader>
