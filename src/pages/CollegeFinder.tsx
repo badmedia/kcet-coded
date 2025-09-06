@@ -80,6 +80,7 @@ const CollegeFinder = () => {
   const [maxRank, setMaxRank] = useState<number>(300000)
   const [collegeSearchTerm, setCollegeSearchTerm] = useState("")
   const [showFilters, setShowFilters] = useState(false)
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
 
   const isMobile = useIsMobile()
   const { toast } = useToast()
@@ -938,9 +939,14 @@ const CollegeFinder = () => {
         }
       })
 
-      // Sort by cutoff rank in ASCENDING order (closest to user rank first)
-      // This shows colleges with cutoff ranks closest to user rank first
-      matchesWithScores.sort((a, b) => a.cutoff_rank - b.cutoff_rank)
+      // Sort by cutoff rank based on user preference
+      // Ascending: shows colleges with cutoff ranks closest to user rank first (default)
+      // Descending: shows colleges with highest cutoff ranks first
+      matchesWithScores.sort((a, b) => {
+        return sortOrder === 'asc' 
+          ? a.cutoff_rank - b.cutoff_rank 
+          : b.cutoff_rank - a.cutoff_rank
+      })
 
       // Show all matches (no limit)
       setMatches(matchesWithScores)
@@ -1270,6 +1276,33 @@ const CollegeFinder = () => {
                       </>
                     )}
                   </Button>
+                  
+                  {/* Sort Order Controls */}
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="sort-order" className="text-sm font-medium whitespace-nowrap">
+                      Sort by:
+                    </Label>
+                    <Select value={sortOrder} onValueChange={(value: 'asc' | 'desc') => setSortOrder(value)}>
+                      <SelectTrigger className="w-36">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="asc">
+                          <div className="flex items-center gap-2">
+                            <ChevronUp className="h-4 w-4" />
+                            Ascending (Low to High)
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="desc">
+                          <div className="flex items-center gap-2">
+                            <ChevronDown className="h-4 w-4" />
+                            Descending (High to Low)
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
                   <div className="flex gap-2">
                     <Button 
                       variant="outline"
@@ -1446,9 +1479,9 @@ const CollegeFinder = () => {
               </div>
             </CardHeader>
             <CardContent>
-              {/* Filter matches based on search term */}
+              {/* Filter matches based on search term and apply sorting */}
               {(() => {
-                const filteredMatches = collegeSearchTerm 
+                let filteredMatches = collegeSearchTerm 
                   ? matches.filter(match => {
                       const searchTerm = collegeSearchTerm.toLowerCase().trim()
                       
@@ -1476,6 +1509,13 @@ const CollegeFinder = () => {
                     })
                   : matches
                 
+                // Apply sorting to filtered results
+                filteredMatches = [...filteredMatches].sort((a, b) => {
+                  return sortOrder === 'asc' 
+                    ? a.cutoff_rank - b.cutoff_rank 
+                    : b.cutoff_rank - a.cutoff_rank
+                })
+                
                 return (
                   <div className="space-y-4">
                     {collegeSearchTerm && (
@@ -1492,7 +1532,16 @@ const CollegeFinder = () => {
                             <TableHead>College</TableHead>
                             <TableHead>Course</TableHead>
                             <TableHead>Category</TableHead>
-                            <TableHead>Cutoff Rank</TableHead>
+                            <TableHead className="cursor-pointer select-none" onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>
+                              <div className="flex items-center gap-1">
+                                Cutoff Rank
+                                {sortOrder === 'asc' ? (
+                                  <ChevronUp className="h-4 w-4" />
+                                ) : (
+                                  <ChevronDown className="h-4 w-4" />
+                                )}
+                              </div>
+                            </TableHead>
                             <TableHead>Match Score</TableHead>
                             <TableHead>Safety Level</TableHead>
                             <TableHead>Year</TableHead>
