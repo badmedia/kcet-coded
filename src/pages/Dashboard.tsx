@@ -261,17 +261,19 @@ const Dashboard = () => {
                         {isSummaryExpanded ? 'Show Less' : 'Expand to view full details'}
                       </Button>
                     </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950 px-2 py-1 rounded">by u/upbeat-sign-7525</span>
-                      <a 
-                        href="https://www.reddit.com/r/kcet/comments/1n9y0ta/kea_round_3_counselling_announcement_as_per_new/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs font-medium text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950 px-2 py-1 rounded hover:bg-orange-100 dark:hover:bg-orange-900 transition-colors"
-                      >
-                        View Original Post
-                      </a>
-                    </div>
+                    {news[0].source === 'Reddit r/kcet' && (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950 px-2 py-1 rounded">by u/upbeat-sign-7525</span>
+                        <a 
+                          href="https://www.reddit.com/r/kcet/comments/1n9y0ta/kea_round_3_counselling_announcement_as_per_new/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs font-medium text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950 px-2 py-1 rounded hover:bg-orange-100 dark:hover:bg-orange-900 transition-colors"
+                        >
+                          View Original Post
+                        </a>
+                      </div>
+                    )}
                   </div>
                   
                   {isSummaryExpanded ? (
