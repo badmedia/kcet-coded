@@ -199,6 +199,15 @@ const Dashboard = () => {
         <p className="text-muted-foreground">Your comprehensive guide to KCET admissions</p>
       </div>
 
+      {/* Disclaimer */}
+      <Card className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
+        <CardContent className="p-4">
+          <p className="text-sm text-slate-300">
+            <strong className="text-slate-200">Disclaimer:</strong> This is an independent project and is not affiliated with r/kcet community or its moderation team in any way.
+          </p>
+        </CardContent>
+      </Card>
+
       {/* News - Primary section */}
       <Card className="border-primary/20">
         <CardHeader>
