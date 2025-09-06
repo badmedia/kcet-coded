@@ -31,21 +31,21 @@ const RoundTracker = () => {
       id: 'round1',
       name: 'Round 1',
       status: 'completed',
-      startDate: '2025-08-15',
-      endDate: '2025-08-25',
+      startDate: '2025-07-08',
+      endDate: '2025-08-15',
       progress: 100,
-      description: 'First round of counseling completed',
-      alerts: ['All allotments have been finalized', 'Fee payment deadline has passed']
+      description: 'First round of counseling completed - Option entry: July 8-29, Final results: August 2',
+      alerts: ['All allotments have been finalized', 'Fee payment deadline has passed', 'Last date to report to colleges: August 15, 2025']
     },
     {
       id: 'round2',
       name: 'Round 2',
-      status: 'active',
-      startDate: '2025-08-28',
-      endDate: '2025-09-05',
-      progress: 85,
-      description: 'Second round of counseling - Almost over',
-      alerts: ['Round 2 is ending soon - Last chance to modify preferences', 'Fee payment deadline approaching']
+      status: 'completed',
+      startDate: '2025-08-21',
+      endDate: '2025-09-04',
+      progress: 100,
+      description: 'Second round of counseling completed - Option entry: August 21-26, Final results: August 30',
+      alerts: ['Round 2 has concluded', 'Final seat allotment declared on August 30, 2025', 'Last date to report to colleges: September 4, 2025']
     },
     {
       id: 'round3',
@@ -54,8 +54,8 @@ const RoundTracker = () => {
       startDate: 'TBA',
       endDate: 'TBA',
       progress: 0,
-      description: 'Final round of counseling - Schedule not yet announced',
-      alerts: ['Round 3 schedule not yet announced by KEA', 'This will be the last opportunity for counseling']
+      description: 'Final round of counseling - Expected to be announced in October 2025',
+      alerts: ['Round 3 schedule not yet announced by KEA', 'This will be the last opportunity for counseling', 'Expected to fill remaining vacant seats']
     }
   ])
 
@@ -144,9 +144,9 @@ const RoundTracker = () => {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center space-x-2">
-              <Clock className="h-5 w-5 text-blue-500" />
+              <CheckCircle className="h-5 w-5 text-green-500" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Current Round</p>
+                <p className="text-sm font-medium text-muted-foreground">Latest Completed Round</p>
                 <p className="text-2xl font-bold">Round 2</p>
               </div>
             </div>
@@ -156,11 +156,11 @@ const RoundTracker = () => {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center space-x-2">
-              <Timer className="h-5 w-5 text-orange-500" />
+              <Calendar className="h-5 w-5 text-orange-500" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Round 3 Starts In</p>
+                <p className="text-sm font-medium text-muted-foreground">Next Round</p>
                 <p className="text-2xl font-bold">
-                  {timeUntilNext === 'TBA' ? 'Schedule not yet announced' : 
+                  {timeUntilNext === 'TBA' ? 'Round 3 - TBA' : 
                    timeUntilNext ? `${timeUntilNext.days}d ${timeUntilNext.hours}h` : 'Soon'}
                 </p>
               </div>
@@ -187,13 +187,16 @@ const RoundTracker = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Progress Bar */}
-              {round.status === 'active' && (
+              {(round.status === 'active' || round.status === 'completed') && (
                 <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Progress</span>
-                    <span>{round.progress}%</span>
+                  <div className="flex justify-between text-sm font-medium">
+                    <span className="text-foreground">Progress</span>
+                    <span className="text-foreground font-semibold">{round.progress}%</span>
                   </div>
-                  <Progress value={round.progress} className="h-2" />
+                  <Progress value={round.progress} className="h-3" />
+                  <div className="text-xs text-muted-foreground">
+                    {round.status === 'completed' ? 'Round completed successfully' : 'Round in progress'}
+                  </div>
                 </div>
               )}
 
@@ -239,20 +242,21 @@ const RoundTracker = () => {
           <div className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
             <p className="text-sm text-orange-800">
-              <strong>Round 2 is ending soon!</strong> If you haven't paid your fees or want to modify your preferences, 
-              do it before the deadline.
+              <strong>Round 2 has concluded!</strong> Final seat allotment results were declared on August 30, 2025. 
+              All students should have reported to their allotted colleges by September 4, 2025.
             </p>
           </div>
           <div className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
             <p className="text-sm text-orange-800">
-              <strong>Round 3 schedule not yet announced.</strong> This will be your last opportunity for KCET counseling once announced.
+              <strong>Round 3 schedule not yet announced.</strong> This will be your last opportunity for KCET counseling once announced. 
+              Expected to be announced in October 2025.
             </p>
           </div>
           <div className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
             <p className="text-sm text-orange-800">
-              <strong>Stay updated:</strong> Check the official KEA website regularly for any schedule changes or announcements.
+              <strong>Stay updated:</strong> Check the official KEA website regularly for Round 3 schedule announcements and any updates.
             </p>
           </div>
         </CardContent>

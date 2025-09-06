@@ -118,7 +118,7 @@ A comprehensive web application for Karnataka CET (KCET) aspirants to explore co
 ### Quick Start
 ```bash
 # Clone the repository
-git clone https://github.com/Conspirant/kcet-compass.git
+git clone https://github.com/badmedia/kcet-coded
 cd kcet-compass
 
 # Install dependencies
@@ -144,41 +144,6 @@ npm run fetch:news       # Fetch latest KCET news
 npm run test             # Run tests
 npm run test:ui          # Run tests with UI
 ```
-
-## 📁 **Project Structure**
-
-```
-kcet-compass/
-├── src/
-│   ├── pages/
-│   │   ├── Dashboard.tsx          # Main dashboard with statistics
-│   │   ├── RankPredictor.tsx      # KCET rank prediction
-│   │   ├── CollegeFinder.tsx      # Advanced college search
-│   │   ├── CutoffExplorer.tsx     # Cutoff data browser
-│   │   ├── RoundTracker.tsx       # Counseling round tracking
-│   │   ├── Documents.tsx          # Document checklist
-│   │   └── ...                    # Other pages (under development)
-│   ├── components/
-│   │   ├── ui/                    # shadcn/ui components
-│   │   ├── AppSidebar.tsx         # Main navigation
-│   │   ├── Layout.tsx             # App layout wrapper
-│   │   └── ...                    # Feature components
-│   ├── lib/
-│   │   ├── rank-predictor.ts      # Rank prediction algorithms
-│   │   ├── courses.ts             # Course definitions
-│   │   └── xlsx-loader.ts         # Excel data loader
-│   └── integrations/supabase/     # Database integration
-├── public/data/
-│   ├── kcet_cutoffs_consolidated.json  # Main cutoff data
-│   ├── news.json                  # Latest KCET news
-│   └── raw/                       # Raw extraction files
-├── scripts/
-│   ├── extract-cutoffs.mjs        # PDF data extraction
-│   ├── fetch-news.mjs             # News fetching
-│   └── ...                        # Other utility scripts
-└── *.xlsx                         # KCET cutoff Excel files
-```
-
 ## 🎯 **Key Features in Detail**
 
 ### Rank Predictor
@@ -270,8 +235,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 **Support**
 
 For support, questions, or feature requests:
-- Create an issue on [GitHub](https://github.com/Conspirant/kcet-compass/issues)
-- Email: [your-email@domain.com]
+- Create an issue on [GitHub](https://github.com/badmedia/kcet-coded/issues)
+- Email: [gwakamoliyeah@gmail.com]
 
 ---
 
