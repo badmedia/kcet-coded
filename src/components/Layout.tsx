@@ -45,10 +45,11 @@ export function Layout({ children }: LayoutProps) {
         </div>
         
         {/* Watermark - Global */}
-        <div className="fixed bottom-4 right-4 z-50">
-          <div className="bg-red-500 text-white rounded-full px-4 py-2 text-sm font-bold flex items-center gap-2 shadow-lg">
+        <div className="fixed bottom-4 right-4 z-50" key={Date.now()}>
+          <div className="bg-red-500 text-white rounded-full px-4 py-2 text-sm font-bold flex items-center gap-2 shadow-lg animate-pulse">
             <span>❤️</span>
             <span>by u/Elegant_Compote9073</span>
+            <span className="text-xs opacity-70">{Math.random().toString(36).substr(2, 5)}</span>
           </div>
         </div>
       </div>
