@@ -136,7 +136,7 @@ const RoundTracker = () => {
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Round Tracker & Alerts</h1>
-        <p className="text-muted-foreground">Stay updated with KCET counseling rounds and notifications</p>
+        <p className="text-foreground/70">Stay updated with KCET counseling rounds and notifications</p>
       </div>
 
       {/* Current Status Overview */}

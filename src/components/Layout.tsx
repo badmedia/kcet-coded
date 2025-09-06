@@ -3,7 +3,6 @@ import { AppSidebar } from "./AppSidebar"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { User, Settings } from "lucide-react"
-import { Footer } from "./Footer"
 
 interface LayoutProps {
   children: React.ReactNode
@@ -26,7 +25,7 @@ export function Layout({ children }: LayoutProps) {
                     BETA
                   </Badge>
                 </div>
-                <p className="text-sm text-muted-foreground">KCET Helping Hub</p>
+                <p className="text-sm text-foreground/70">KCET Helping Hub</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -43,9 +42,6 @@ export function Layout({ children }: LayoutProps) {
           <main className="flex-1 p-6">
             {children}
           </main>
-          
-          {/* Footer */}
-          <Footer />
         </div>
       </div>
     </SidebarProvider>

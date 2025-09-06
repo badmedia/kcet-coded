@@ -188,7 +188,7 @@ const Dashboard = () => {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground mt-2">Loading dashboard...</p>
+          <p className="text-foreground/70 mt-2">Loading dashboard...</p>
         </div>
       </div>
     )
@@ -198,14 +198,14 @@ const Dashboard = () => {
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">KCET Coded Dashboard</h1>
-        <p className="text-muted-foreground">Your comprehensive guide to KCET admissions</p>
+          <p className="text-foreground/80">Your comprehensive guide to KCET admissions</p>
       </div>
 
       {/* Disclaimer */}
-      <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
+      <Card className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
         <CardContent className="p-4">
-          <p className="text-sm text-amber-800 dark:text-amber-200">
-            <strong className="text-amber-900 dark:text-amber-100">⚠️ Disclaimer:</strong> This is an independent project and is not affiliated with r/kcet community or its moderation team in any way.
+          <p className="text-sm text-slate-300">
+            <strong className="text-slate-200">Disclaimer:</strong> This is an independent project and is not affiliated with r/kcet community or its moderation team in any way.
           </p>
         </CardContent>
       </Card>
@@ -222,139 +222,237 @@ const Dashboard = () => {
           </div>
         </CardHeader>
         <CardContent>
-          {news.length > 0 ? (
-            <div className="space-y-4">
-              {/* Single Hero news item only */}
-              <a href={news[0].url} target="_blank" rel="noreferrer" className="block group">
-                <div className="relative overflow-hidden rounded-none border-2 border-foreground/30 bg-card shadow-[6px_6px_0_0_rgba(0,0,0,0.35)] dark:shadow-[6px_6px_0_0_rgba(255,255,255,0.12)] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
-                  <img
-                    src={news[0].image}
-                    alt={news[0].title}
-                    className="w-full h-[300px] object-cover group-hover:scale-[1.02] transition-transform"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <div className="flex items-center gap-2 text-xs text-white/80">
-                      {news[0].source && <span className="px-2 py-0.5 bg-black/50">{news[0].source}</span>}
-                      {news[0].publishedAt && <span className="opacity-80">{news[0].publishedAt}</span>}
-                    </div>
-                    <h3 className="mt-1 text-white text-xl font-extrabold leading-snug tracking-tight">
-                      {news[0].title}
-                    </h3>
+          <div className="space-y-4">
+            {/* YouTube Video - First Item */}
+            <a href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID" target="_blank" rel="noreferrer" className="block group">
+              <div className="relative overflow-hidden rounded-none border-2 border-foreground/30 bg-card shadow-[6px_6px_0_0_rgba(0,0,0,0.35)] dark:shadow-[6px_6px_0_0_rgba(255,255,255,0.12)] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                <img
+                  src="/images/kea-ugcet-2025-thumbnail.png"
+                  alt="KCET 2025 Important Updates - YouTube Video"
+                  className="w-full h-[300px] object-cover group-hover:scale-[1.02] transition-transform"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
+                    <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
                   </div>
                 </div>
-              </a>
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <div className="flex items-center gap-2 text-xs text-white/80">
+                    <span className="px-2 py-0.5 bg-red-600/80">YouTube</span>
+                    <span className="opacity-80">Latest Update</span>
+                  </div>
+                  <h3 className="mt-1 text-white text-xl font-extrabold leading-snug tracking-tight">
+                    KCET 2025 Important Updates & Guidelines
+                  </h3>
+                </div>
+              </div>
+            </a>
+
+            {/* Detailed Summary Section */}
+            <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+              <div className="flex flex-col gap-3 mb-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">📢 KEA Round 3 Counselling - Complete Guide</h4>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                    className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+                  >
+                    {isSummaryExpanded ? 'Show Less' : 'Expand to view full details'}
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950 px-2 py-1 rounded">by u/upbeat-sign-7525</span>
+                  <a 
+                    href="https://www.reddit.com/r/kcet/comments/1n9y0ta/kea_round_3_counselling_announcement_as_per_new/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-medium text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950 px-2 py-1 rounded hover:bg-orange-100 dark:hover:bg-orange-900 transition-colors"
+                  >
+                    View Original Post
+                  </a>
+                </div>
+              </div>
               
-              {/* Summary below the news card */}
-              {news[0].summary && (
-                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm">
-                  <div className="flex flex-col gap-3 mb-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">📋 Detailed Summary:</h4>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950 px-2 py-1 rounded border border-blue-200 dark:border-blue-800">
-                            by u/upbeat-sign-7525
-                          </span>
-                          <a 
-                            href="https://www.reddit.com/r/kcet/comments/1n9y0ta/kea_round_3_counselling_announcement_as_per_new/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs font-medium text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950 px-2 py-1 rounded border border-orange-200 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900 transition-colors flex items-center gap-1"
-                          >
-                            <ExternalLink className="h-3 w-3" />
-                            View Original Post
-                          </a>
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
-                        className="text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 font-medium"
-                      >
-                        {isSummaryExpanded ? 'Show Less' : 'Expand to view full details'}
-                      </Button>
+              {isSummaryExpanded ? (
+                <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed space-y-4">
+                  {/* Schedule */}
+                  <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🕒 ROUND 3 SCHEDULE:</div>
+                    <div className="ml-4 space-y-1">
+                      <div>• 🪑 Seat Matrix: 06 Sept</div>
+                      <div>• 💰 Caution Deposit Payment: 06 – 08 Sept (till 1 PM)</div>
+                      <div>• 📝 Option Entry/Modify/Delete: 06 Sept (4 PM) – 08 Sept (2 PM)</div>
+                      <div>• ❌ Seat Surrender (Round 1 & 2): On/Before 08 Sept, 1 PM (₹5,000 deducted)</div>
                     </div>
                   </div>
-                  
-                  {isSummaryExpanded ? (
-                    <div className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed space-y-3">
-                      {news[0].summary.split('\n\n').map((section, index) => {
-                        if (section.trim() === '') return null;
-                        
-                        // Check if it's a header (contains emoji and colon)
-                        if (section.includes('📌') || section.includes('👥') || section.includes('🎓') || 
-                            section.includes('🩺') || section.includes('🧘') || section.includes('⚠️') || 
-                            section.includes('🔑') || section.includes('🕒') || section.includes('💡')) {
-                          return (
-                            <div key={index} className="font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                              {section}
-                            </div>
-                          );
-                        }
-                        
-                        // Check if it's a bullet point section
-                        if (section.includes('•')) {
-                          return (
-                            <div key={index} className="ml-4">
-                              {section.split('\n').map((line, lineIndex) => (
-                                <div key={lineIndex} className="mb-1">
-                                  {line}
-                                </div>
-                              ))}
-                            </div>
-                          );
-                        }
-                        
-                        // Regular paragraph
-                        return (
-                          <div key={index} className="mb-2">
-                            {section}
-                          </div>
-                        );
-                      })}
+
+                  {/* Why 3rd Round */}
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">📌 Why a 3rd Round?</div>
+                    <div className="ml-4 space-y-1">
+                      <div>• <strong>MCC Delay:</strong> MCC (Medical Counselling Committee) hasn't completed 2nd Round results for Medical/Dental, blocking these seats</div>
+                      <div>• <strong>Course Stuck:</strong> Other courses (Engg/AYUSH/Vet) can't wait for MCC. KEA must move forward</div>
+                      <div>• <strong>Legal Window:</strong> AICTE allows states to conduct counseling up to 10 days before cut-off. KEA had requested extension but no reply yet</div>
+                      <div>• <strong>Private College Agreement:</strong> KEA must return unfilled private seats to colleges by Sept 10. This forced the round</div>
+                      <div>• <strong>AICTE Status:</strong> AICTE has not yet replied to KEA's request for deadline extension</div>
                     </div>
-                  ) : (
-                    <div className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed">
-                      <p className="mb-2">
-                        KEA has officially moved into the 3rd Round of UG Counseling for Medical, Dental, Engineering, AYUSH, Veterinary, Nursing, and other professional courses.
-                      </p>
-                      <div className="space-y-2">
-                        <div className="font-semibold text-slate-900 dark:text-slate-100">📌 Background & Reason for 3rd Round:</div>
-                        <div className="ml-4">
-                          <div className="mb-1">• MCC delay: MCC hasn't released 2nd Round results, blocking Medical/Dental seats</div>
-                          <div className="mb-1">• Other courses stuck: Engineering, Veterinary, AYUSH cannot wait for MCC</div>
-                          <div className="mb-1">• Legal allowance: AICTE permits states to conduct rounds up to 10 days before cut-off</div>
-                          <div className="mb-1">• Private college agreement: KEA must return unfilled private seats by 10th Sept</div>
-                        </div>
-                        
-                        <div className="font-semibold text-slate-900 dark:text-slate-100">👥 Who is Eligible to Participate?</div>
-                        <div className="ml-4">
-                          <div className="mb-1">• Choice 1 (Confirmed & joined): You're out - already joined</div>
-                          <div className="mb-1">• Choice 2 (Fee paid, waiting for upgrade): Can re-arrange, delete, or add options</div>
-                          <div className="mb-1">• Choice 3 (Deposit paid): Paid ₹10,000 (engineering) or ₹1 lakh (medical) - can re-enter options</div>
-                          <div className="mb-1">• Left-out/No seat candidates: Must pay ₹10,000 caution deposit to activate login</div>
-                        </div>
-                        
-                        <div className="font-semibold text-slate-900 dark:text-slate-100">⚠️ Critical Rules & Warnings:</div>
-                        <div className="ml-4">
-                          <div className="mb-1">• If allotted in Round 3, admission is COMPULSORY</div>
-                          <div className="mb-1">• No further upgrade, no withdrawal</div>
-                          <div className="mb-1">• Rejecting seats = Caution deposit forfeited + barred from 2026 counseling</div>
+                  </div>
+
+                  {/* Eligibility */}
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">👥 Who is Eligible?</div>
+                    <div className="ml-4 space-y-3">
+                      <div><strong>✅ Choice 2 candidates:</strong> Paid fees earlier, waiting for upgrade. Can re-arrange, delete, or add new colleges (except Medical/Dental). No fresh option entry required.</div>
+                      <div><strong>✅ Choice 3 candidates:</strong> Paid ₹10,000 (Engg) or ₹1 lakh (Medical). Can re-enter options. No fresh option entry required.</div>
+                      <div><strong>✅ Left-out candidates (MUST pay ₹10,000 caution deposit):</strong>
+                        <div className="ml-4 mt-1 space-y-1">
+                          <div>• Did not select any choice in Round 1 & 2</div>
+                          <div>• Selected Choice 2 but didn't pay the fee</div>
+                          <div>• Selected Choice 3 but didn't pay caution deposit</div>
+                          <div>• Seat unallotted candidates</div>
+                          <div>• <strong>KITHBISAKIRO CANDIDATES CAN COMEBACK</strong></div>
                         </div>
                       </div>
+                      <div><strong>❌ Choice 1 (confirmed & joined):</strong> Already admitted. Out of counseling</div>
                     </div>
-                  )}
+                  </div>
+
+                  {/* Engineering & Professional Courses */}
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🎓 Engineering & Professional Courses</div>
+                    <div className="ml-4 space-y-1">
+                      <div>• ~8,000 seats left after Round 2</div>
+                      <div>• Fresh colleges/courses can be added</div>
+                      <div>• 17 Govt. Engineering Colleges with 50% fee concession</div>
+                      <div>• Fees as low as ₹20k–25k/year in govt colleges</div>
+                      <div>• <strong>KEA Advice:</strong> Don't waste your rank by keeping limited options</div>
+                    </div>
+                  </div>
+
+                  {/* Medical & Dental */}
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🩺 Medical & Dental Courses</div>
+                    <div className="ml-4 space-y-2">
+                      <div><strong>Option Entry Portal:</strong> Enabled for Choice 2 & 3 candidates who have done option entry till 26-08-2025, 1:00 PM</div>
+                      <div><strong>Seat Increases:</strong> 8 Govt. Medical Colleges got +50 seats each (officially added in matrix)</div>
+                      <div><strong>Newly Added Colleges:</strong>
+                        <div className="ml-4 mt-1 space-y-1">
+                          <div>• BGS Dental</div>
+                          <div>• Farooki Dental (40 seats at Farookia Dental College, Mysuru)</div>
+                          <div>• JNMC Medical (12 medical seats at JNMC College, Belagavi)</div>
+                          <div>• BGS Global Dental College (50 seats)</div>
+                        </div>
+                      </div>
+                      <div><strong>NRI Quota (first time ever):</strong> 51 NRI seats introduced across 8 govt. colleges at ₹25 lakh/year. If NRI seats remain vacant, they will go to "Others" at same fee</div>
+                      <div><strong>Option Entry Rules:</strong>
+                        <div className="ml-4 mt-1 space-y-1">
+                          <div>• No fresh option entry or new college addition allowed (except newly released colleges)</div>
+                          <div>• Candidates can modify/rearrange/delete existing options</div>
+                          <div>• 8000 virtual vacancies will be allotted to new seats of that 8 colleges</div>
+                          <div>• NRI category candidates (Round 1 admitted) and others may add 8 newly added NRI seats</div>
+                        </div>
+                      </div>
+                      <div><strong>Choice 3 Medical Candidates:</strong> 64 students paid ₹1 lakh but didn't press "Agree" button earlier. KEA will now consider them</div>
+                      <div><strong>MCC Update:</strong> If MCC releases results on 12th September, KEA will provide quit option and re-run allotment (Unlikely as per current updates - KEA is doubtful of MCC results won't be out on 12th Sept)</div>
+                    </div>
+                  </div>
+
+                  {/* Nursing & BNYS */}
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🧘 Nursing & BNYS (Yoga/Naturopathy)</div>
+                    <div className="ml-4 space-y-1">
+                      <div>• Round 3 will have only Government seat allotments</div>
+                      <div>• No private quota allotments in these courses</div>
+                    </div>
+                  </div>
+
+                  {/* Critical Rules */}
+                  <div className="bg-red-50 dark:bg-red-950 p-3 rounded-lg">
+                    <div className="font-semibold text-red-900 dark:text-red-100 mb-2">⚠️ CRITICAL RULES & WARNINGS</div>
+                    <div className="ml-4 space-y-1">
+                      <div>• <strong>If allotted in Round 3 → Admission is COMPULSORY</strong></div>
+                      <div>• No further upgrades, no withdrawal</div>
+                      <div>• Rejecting/Skipping seat = Heavy penalty:</div>
+                      <div className="ml-4">- Deposit forfeited</div>
+                      <div className="ml-4">- Candidate barred from 2026 KEA counseling</div>
+                      <div>• <strong>Enter only those colleges/courses where you are ready to join</strong></div>
+                    </div>
+                  </div>
+
+                  {/* New Course Approval */}
+                  <div className="bg-green-50 dark:bg-green-950 p-3 rounded-lg">
+                    <div className="font-semibold text-green-900 dark:text-green-100 mb-2">📢 New Course Approval</div>
+                    <div className="ml-4">
+                      <div><strong>Institution:</strong> Visvesvaraya Technological University (VTU) CPGS, Kalaburagi</div>
+                      <div><strong>Programme:</strong> B.Tech Mechanical Engineering</div>
+                      <div><strong>Intake:</strong> 60 seats</div>
+                      <div><strong>Academic Year:</strong> From 2025–26 onwards</div>
+                    </div>
+                  </div>
+
+                  {/* Final Note */}
+                  <div className="bg-yellow-50 dark:bg-yellow-950 p-3 rounded-lg">
+                    <div className="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">📝 Final Note</div>
+                    <div className="ml-4">
+                      <div>• Schedule may change if AICTE extends the deadline</div>
+                      <div>• KEA has informed private colleges that remaining seats will be surrendered 5 days before the deadline</div>
+                      <div>• <strong>Important:</strong> Round 3 allotted candidates must compulsorily join the allotted college</div>
+                      <div>• If you don't join, the caution deposit will be forfeited and you will be barred from participating in next year's counselling</div>
+                      <div>• <strong>👉 Enter only those colleges/courses where you are ready to join</strong></div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                  <p className="mb-3 font-semibold">
+                    🚨 KEA has officially announced the 3rd Round of UG counseling for Medical, Dental, Engineering, AYUSH, Veterinary, Nursing, BNYS and other professional courses.
+                  </p>
+                  
+                  <div className="space-y-3">
+                    <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
+                      <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🕒 SCHEDULE:</div>
+                      <div className="text-xs space-y-1">
+                        <div>• Seat Matrix: 06 Sept | Caution Deposit: 06-08 Sept (till 1 PM)</div>
+                        <div>• Option Entry: 06 Sept (4 PM) – 08 Sept (2 PM)</div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">👥 ELIGIBILITY:</div>
+                      <div className="ml-4 space-y-1 text-xs">
+                        <div>• <strong>Choice 2:</strong> Can re-arrange, delete, or add options (except Medical/Dental)</div>
+                        <div>• <strong>Choice 3:</strong> Can re-enter options (paid ₹10k/₹1L)</div>
+                        <div>• <strong>Left-out candidates:</strong> Must pay ₹10,000 caution deposit</div>
+                      </div>
+                    </div>
+
+                    <div className="bg-red-50 dark:bg-red-950 p-3 rounded-lg">
+                      <div className="font-semibold text-red-900 dark:text-red-100 mb-2">⚠️ CRITICAL WARNING:</div>
+                      <div className="text-xs">
+                        <strong>If allotted in Round 3, admission is COMPULSORY. Rejecting = Deposit forfeited + Barred from 2026 counseling.</strong>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🎓 KEY UPDATES:</div>
+                      <div className="ml-4 space-y-1 text-xs">
+                        <div>• Engineering: ~8,000 seats vacant, fresh entry allowed</div>
+                        <div>• Medical: 8 govt colleges got +50 seats each, NRI quota introduced</div>
+                        <div>• Nursing/BNYS: Only Govt quota seats in Round 3</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
-          ) : (
-            <div className="text-sm text-muted-foreground">
-              No news yet. Add items to <code>public/data/news.json</code> to display updates with images (Reddit image URLs supported).
-            </div>
-          )}
+
+          </div>
         </CardContent>
       </Card>
 
@@ -401,7 +499,7 @@ const Dashboard = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold">{action.title}</h3>
-                    <p className="text-sm text-muted-foreground">{action.description}</p>
+                    <p className="text-sm text-foreground/70">{action.description}</p>
                   </div>
                 </div>
               </CardContent>
@@ -416,11 +514,11 @@ const Dashboard = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Records</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <TrendingUp className="h-4 w-4 text-foreground/60" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalRecords.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-foreground/70">
                 Cutoff entries across all years
               </p>
             </CardContent>
@@ -429,11 +527,11 @@ const Dashboard = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Colleges</CardTitle>
-              <GraduationCap className="h-4 w-4 text-muted-foreground" />
+              <GraduationCap className="h-4 w-4 text-foreground/60" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalColleges}</div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-foreground/70">
                 Engineering colleges covered
               </p>
             </CardContent>
@@ -442,11 +540,11 @@ const Dashboard = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Branches</CardTitle>
-              <BookOpen className="h-4 w-4 text-muted-foreground" />
+              <BookOpen className="h-4 w-4 text-foreground/60" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalBranches}</div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-foreground/70">
                 Engineering branches available
               </p>
             </CardContent>
@@ -455,11 +553,11 @@ const Dashboard = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Years</CardTitle>
-              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+              <BarChart3 className="h-4 w-4 text-foreground/60" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{Object.keys(stats.years).length}</div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-foreground/70">
                 Years of data available
               </p>
             </CardContent>
@@ -486,7 +584,7 @@ const Dashboard = () => {
                     <div key={year} className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span className="font-medium">{year}</span>
-                        <span className="text-muted-foreground">{count.toLocaleString()} records</span>
+                        <span className="text-foreground/70">{count.toLocaleString()} records</span>
                       </div>
                       <Progress 
                         value={(count / stats.totalRecords) * 100} 
@@ -516,7 +614,7 @@ const Dashboard = () => {
                         <Badge variant="outline">{category}</Badge>
                         <span className="text-sm">{count.toLocaleString()}</span>
                       </div>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-sm text-foreground/70">
                         {((count / stats.totalRecords) * 100).toFixed(1)}%
                       </span>
                     </div>
@@ -544,7 +642,7 @@ const Dashboard = () => {
                       </div>
                       <div>
                         <div className="font-medium text-sm">{branch.name}</div>
-                        <div className="text-xs text-muted-foreground">{branch.code}</div>
+                        <div className="text-xs text-foreground/70">{branch.code}</div>
                       </div>
                     </div>
                     <Badge variant="secondary">{branch.count}</Badge>

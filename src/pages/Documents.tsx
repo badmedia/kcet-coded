@@ -146,7 +146,7 @@ const Documents = () => {
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Documents</h1>
-        <p className="text-muted-foreground">Complete list of documents required for KCET/UG-NEET 2025 admission process.</p>
+        <p className="text-foreground/70">Complete list of documents required for KCET/UG-NEET 2025 admission process.</p>
       </div>
 
       {/* Contact Dev Note */}
@@ -184,7 +184,7 @@ const Documents = () => {
                           <Badge variant="secondary" className="text-xs">If Applicable</Badge>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground">{doc.description}</p>
+                      <p className="text-sm text-foreground/70">{doc.description}</p>
                     </div>
                     <div className="flex items-center gap-2 ml-4">
                       <div className="text-right">
@@ -192,7 +192,7 @@ const Documents = () => {
                           <Copy className="h-4 w-4" />
                           {doc.type}
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-foreground/70">
                           {doc.copies} {doc.copies === 1 ? 'copy' : 'copies'}
                         </div>
                       </div>
