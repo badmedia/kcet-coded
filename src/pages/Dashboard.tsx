@@ -252,7 +252,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">📋 Detailed Summary:</h4>
-                      <span className="text-xs text-slate-500 dark:text-slate-400">(by u/upbeat-sign-7525)</span>
+                      <span className="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950 px-2 py-1 rounded">by u/upbeat-sign-7525</span>
                     </div>
                     <Button
                       variant="ghost"
