@@ -249,9 +249,19 @@ const Dashboard = () => {
               {/* Summary below the news card */}
               {news[0].summary && (
                 <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
+                  <div className="flex flex-col gap-3 mb-3">
+                    <div className="flex items-center justify-between">
                       <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">📋 Detailed Summary:</h4>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                        className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+                      >
+                        {isSummaryExpanded ? 'Show Less' : 'Expand to view full details'}
+                      </Button>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950 px-2 py-1 rounded">by u/upbeat-sign-7525</span>
                       <a 
                         href="https://www.reddit.com/r/kcet/comments/1n9y0ta/kea_round_3_counselling_announcement_as_per_new/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
@@ -262,14 +272,6 @@ const Dashboard = () => {
                         View Original Post
                       </a>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
-                      className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-                    >
-                      {isSummaryExpanded ? 'Show Less' : 'Expand to view full details'}
-                    </Button>
                   </div>
                   
                   {isSummaryExpanded ? (
