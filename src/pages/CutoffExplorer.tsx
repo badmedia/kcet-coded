@@ -63,16 +63,48 @@ const CutoffExplorer = () => {
     try {
       console.log('Loading cutoff data from local JSON file...')
       
-      // Fetch the JSON data from the public folder (absolute path for subroutes)
-              const response = await fetch('/kcet_cutoffs.json')
+      // Try multiple data sources with fallback
+      let response = await fetch('/kcet_cutoffs.json')
+      let dataSource = 'kcet_cutoffs.json'
+      
       if (!response.ok) {
-        throw new Error(`Failed to fetch data: ${response.status}`)
+        // Try alternative data source
+        response = await fetch('/data/kcet_cutoffs_consolidated.json')
+        dataSource = 'data/kcet_cutoffs_consolidated.json'
+        
+        if (!response.ok) {
+          // Try public directory
+          response = await fetch('/public/data/kcet_cutoffs_consolidated.json')
+          dataSource = 'public/data/kcet_cutoffs_consolidated.json'
+          
+          if (!response.ok) {
+            // Try the 2025 data file
+            response = await fetch('/kcet_cutoffs2025.json')
+            dataSource = 'kcet_cutoffs2025.json'
+            
+            if (!response.ok) {
+              throw new Error(`Failed to load data from all sources: ${response.status} ${response.statusText}`)
+            }
+          }
+        }
       }
       
-      const data: CutoffResponse = await response.json()
+      console.log(`Loading data from: ${dataSource}`)
+      
+      const rawData = await response.json()
+      console.log('Raw data structure:', Object.keys(rawData))
+      
+      // Handle different data structures
+      let data: CutoffResponse
+      if (!rawData.cutoffs && Array.isArray(rawData)) {
+        console.log('Data is a direct array, wrapping in response format')
+        data = { cutoffs: rawData, metadata: {} } as any
+      } else {
+        data = rawData
+      }
+      
       console.log('Loaded cutoff data:', data.cutoffs.length, 'records')
       console.log('First record:', data.cutoffs[0])
-      console.log('Data structure:', Object.keys(data))
       
       setAllCutoffs(data.cutoffs)
       
@@ -114,7 +146,12 @@ const CutoffExplorer = () => {
       setCutoffs(data.cutoffs.slice(0, 200)) // Show first 200 records initially
     } catch (error: any) {
       console.error('Error loading cutoff data:', error)
-      setErrorMessage(error?.message || 'Unknown error while loading data')
+      console.error('Error details:', {
+        message: error?.message,
+        stack: error?.stack,
+        name: error?.name
+      })
+      setErrorMessage(`Failed to load cutoff data: ${error?.message || 'Unknown error'}. Please check the console for more details.`)
       toast({
         title: "Error",
         description: "Failed to load cutoff data. Please try again.",

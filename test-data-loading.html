@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Data Loading</title>
+</head>
+<body>
+    <h1>Testing Data Loading</h1>
+    <div id="results"></div>
+    
+    <script>
+        async function testDataLoading() {
+            const results = document.getElementById('results');
+            const sources = [
+                '/kcet_cutoffs.json',
+                '/data/kcet_cutoffs_consolidated.json',
+                '/kcet_cutoffs2025.json'
+            ];
+            
+            for (const source of sources) {
+                try {
+                    console.log(`Testing ${source}...`);
+                    const response = await fetch(source);
+                    if (response.ok) {
+                        const data = await response.json();
+                        results.innerHTML += `<p>✅ ${source}: Success - ${data.cutoffs ? data.cutoffs.length : data.length} records</p>`;
+                        console.log(`✅ ${source}:`, data);
+                    } else {
+                        results.innerHTML += `<p>❌ ${source}: HTTP ${response.status}</p>`;
+                        console.log(`❌ ${source}:`, response.status);
+                    }
+                } catch (error) {
+                    results.innerHTML += `<p>❌ ${source}: Error - ${error.message}</p>`;
+                    console.log(`❌ ${source}:`, error);
+                }
+            }
+        }
+        
+        testDataLoading();
+    </script>
+</body>
+</html>
