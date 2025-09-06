@@ -50,12 +50,12 @@ const RoundTracker = () => {
     {
       id: 'round3',
       name: 'Round 3 (Extended)',
-      status: 'upcoming',
-      startDate: 'TBA',
-      endDate: 'TBA',
-      progress: 0,
-      description: 'Final round of counseling - Schedule not yet announced',
-      alerts: ['Round 3 schedule not yet announced by KEA', 'This will be the last opportunity for counseling', 'Expected to fill remaining vacant seats']
+      status: 'active',
+      startDate: '2025-09-06',
+      endDate: '2025-09-08',
+      progress: 25,
+      description: 'Final round of counseling - Option entry: Sep 6-8, 2025 (4:00 PM on Sep 6 to 2:00 PM on Sep 8)',
+      alerts: ['Seat matrix and fee details published on Sep 6, 2025', 'Caution deposit payment: Sep 6-8, 2025 (till 1:00 PM)', 'Option entry period: Sep 6 (4:00 PM) to Sep 8 (2:00 PM)', 'Seat cancellation deadline: Sep 8, 2025 (1:00 PM)', 'KITHIBISAKIRO candidates can comeback - must pay ₹10,000 caution deposit', 'Nursing/Yoga courses: Only Government seats in Round 3', 'Medical/Dental: Only re-arrangements allowed (except new colleges)']
     }
   ])
 
@@ -156,12 +156,11 @@ const RoundTracker = () => {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center space-x-2">
-              <Calendar className="h-5 w-5 text-orange-500" />
+              <Clock className="h-5 w-5 text-blue-500" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Next Round</p>
-                <p className="text-2xl font-bold">
-                  {timeUntilNext === 'TBA' ? 'Round 3 - TBA' : 
-                   timeUntilNext ? `${timeUntilNext.days}d ${timeUntilNext.hours}h` : 'Soon'}
+                <p className="text-sm font-medium text-muted-foreground">Current Round</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  Round 3 - Started
                 </p>
               </div>
             </div>
@@ -217,9 +216,9 @@ const RoundTracker = () => {
               {round.alerts.length > 0 && (
                 <div className="space-y-2">
                   {round.alerts.map((alert, index) => (
-                    <Alert key={index} className={round.status === 'active' ? 'border-orange-200 bg-orange-50' : ''}>
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription className="text-sm">{alert}</AlertDescription>
+                    <Alert key={index} className={round.status === 'active' ? 'border-orange-200 bg-orange-50 dark:bg-orange-950 dark:border-orange-800' : 'border-slate-200 bg-slate-50 dark:bg-slate-800 dark:border-slate-700'}>
+                      <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                      <AlertDescription className="text-sm text-slate-900 dark:text-slate-100 font-medium">{alert}</AlertDescription>
                     </Alert>
                   ))}
                 </div>
@@ -249,13 +248,25 @@ const RoundTracker = () => {
           <div className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
             <p className="text-sm text-orange-800">
-              <strong>Round 3 schedule not yet announced.</strong> This will be your last opportunity for KCET counseling once announced.
+              <strong>Round 3 is now active!</strong> Option entry period: September 6 (4:00 PM) to September 8 (2:00 PM), 2025.
             </p>
           </div>
           <div className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
             <p className="text-sm text-orange-800">
-              <strong>Stay updated:</strong> Check the official KEA website regularly for Round 3 schedule announcements and any updates.
+              <strong>Important deadlines:</strong> Caution deposit payment till September 8 (1:00 PM), seat cancellation deadline September 8 (1:00 PM).
+            </p>
+          </div>
+          <div className="flex items-start gap-2">
+            <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
+            <p className="text-sm text-orange-800">
+              <strong>Eligibility:</strong> Choice 2 & 3 candidates can modify options. KITHIBISAKIRO candidates (no choices in R1&R2) must pay ₹10,000 caution deposit.
+            </p>
+          </div>
+          <div className="flex items-start gap-2">
+            <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
+            <p className="text-sm text-orange-800">
+              <strong>New courses:</strong> B.Tech Mechanical Engineering at VTU CPGS, Kalaburagi (60 seats) now available.
             </p>
           </div>
         </CardContent>

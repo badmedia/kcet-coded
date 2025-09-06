@@ -297,6 +297,13 @@ const Dashboard = () => {
                           </div>
                         );
                       })}
+                      
+                      {/* Credits section for expanded view */}
+                      <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-600">
+                        <div className="text-xs text-slate-600 dark:text-slate-400">
+                          <strong>Credits:</strong> This detailed summary is based on the comprehensive post by u/upbeat-sign-7525 on r/kcet. Thank you for the thorough analysis and detailed information!
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
@@ -325,6 +332,12 @@ const Dashboard = () => {
                           <div className="mb-1">• If allotted in Round 3, admission is COMPULSORY</div>
                           <div className="mb-1">• No further upgrade, no withdrawal</div>
                           <div className="mb-1">• Rejecting seats = Caution deposit forfeited + barred from 2026 counseling</div>
+                        </div>
+                        
+                        <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-600">
+                          <div className="text-xs text-slate-600 dark:text-slate-400">
+                            <strong>Credits:</strong> This summary is based on the comprehensive post by u/upbeat-sign-7525 on r/kcet. Thank you for the detailed analysis!
+                          </div>
                         </div>
                       </div>
                     </div>
