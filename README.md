@@ -91,7 +91,7 @@ A comprehensive web application for Karnataka CET (KCET) aspirants to explore co
 
 ## 📊 **Data Coverage**
 
-- **63,027+ records** extracted from KCET PDFs (2023-2025)
+- **109,920+ records** extracted from KCET PDFs (2023-2025)
 - **Multiple years**: 2023, 2024, 2025 data with round-wise cutoffs
 - **Comprehensive colleges**: 180+ engineering colleges across Karnataka
 - **All categories**: GM, SC, ST, 1G, 2A, 2B, 3A, 3B
@@ -118,7 +118,7 @@ A comprehensive web application for Karnataka CET (KCET) aspirants to explore co
 ### Quick Start
 ```bash
 # Clone the repository
-git clone https://github.com/Conspirant/kcet-compass.git
+git clone https://github.com/badmedia/kcet-coded.git
 cd kcet-compass
 
 # Install dependencies
@@ -144,41 +144,6 @@ npm run fetch:news       # Fetch latest KCET news
 npm run test             # Run tests
 npm run test:ui          # Run tests with UI
 ```
-
-## 📁 **Project Structure**
-
-```
-kcet-compass/
-├── src/
-│   ├── pages/
-│   │   ├── Dashboard.tsx          # Main dashboard with statistics
-│   │   ├── RankPredictor.tsx      # KCET rank prediction
-│   │   ├── CollegeFinder.tsx      # Advanced college search
-│   │   ├── CutoffExplorer.tsx     # Cutoff data browser
-│   │   ├── RoundTracker.tsx       # Counseling round tracking
-│   │   ├── Documents.tsx          # Document checklist
-│   │   └── ...                    # Other pages (under development)
-│   ├── components/
-│   │   ├── ui/                    # shadcn/ui components
-│   │   ├── AppSidebar.tsx         # Main navigation
-│   │   ├── Layout.tsx             # App layout wrapper
-│   │   └── ...                    # Feature components
-│   ├── lib/
-│   │   ├── rank-predictor.ts      # Rank prediction algorithms
-│   │   ├── courses.ts             # Course definitions
-│   │   └── xlsx-loader.ts         # Excel data loader
-│   └── integrations/supabase/     # Database integration
-├── public/data/
-│   ├── kcet_cutoffs_consolidated.json  # Main cutoff data
-│   ├── news.json                  # Latest KCET news
-│   └── raw/                       # Raw extraction files
-├── scripts/
-│   ├── extract-cutoffs.mjs        # PDF data extraction
-│   ├── fetch-news.mjs             # News fetching
-│   └── ...                        # Other utility scripts
-└── *.xlsx                         # KCET cutoff Excel files
-```
-
 ## 🎯 **Key Features in Detail**
 
 ### Rank Predictor
@@ -210,17 +175,11 @@ kcet-compass/
 ## 📊 **Data Statistics**
 
 ### Current Data Coverage
-- **Total Records**: 63,027+
+- **Total Records**:109.920+
 - **Years**: 2023, 2024, 2025
 - **Colleges**: 180+
 - **Branches**: 100+
 - **Categories**: 8 (GM, SC, ST, 1G, 2A, 2B, 3A, 3B)
-- **Seat Types**: 3 (Government, Management, COMEDK)
-
-### Top Colleges by Data Coverage
-1. E011 - S J C Institute of Technology (1,809 records)
-2. E007 - B M S Institute of Technology (1,800 records)
-3. E005 - R. V. College of Engineering (1,753 records)
 
 ### Top Branches
 1. CS - Computer Science (9,899 records)
@@ -270,7 +229,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 **Support**
 
 For support, questions, or feature requests:
-- Create an issue on [GitHub](https://github.com/Conspirant/kcet-compass/issues)
+- Create an issue on [GitHub](https://github.com/badmedia/kcet-coded/issues)
 - Email: [your-email@domain.com]
 
 ---
