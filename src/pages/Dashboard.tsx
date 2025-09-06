@@ -41,6 +41,7 @@ const Dashboard = () => {
   const [stats, setStats] = useState<DataStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [news, setNews] = useState<NewsItem[]>([])
+  const [isSummaryExpanded, setIsSummaryExpanded] = useState(false)
 
   useEffect(() => {
     const loadStats = async () => {
@@ -221,7 +222,7 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           {news.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {/* Single Hero news item only */}
               <a href={news[0].url} target="_blank" rel="noreferrer" className="block group">
                 <div className="relative overflow-hidden rounded-none border-2 border-foreground/30 bg-card shadow-[6px_6px_0_0_rgba(0,0,0,0.35)] dark:shadow-[6px_6px_0_0_rgba(255,255,255,0.12)] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
@@ -243,6 +244,92 @@ const Dashboard = () => {
                   </div>
                 </div>
               </a>
+              
+              {/* Summary below the news card */}
+              {news[0].summary && (
+                <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">📋 Detailed Summary:</h4>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                      className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+                    >
+                      {isSummaryExpanded ? 'Show Less' : 'Expand to view full details'}
+                    </Button>
+                  </div>
+                  
+                  {isSummaryExpanded ? (
+                    <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed space-y-3">
+                      {news[0].summary.split('\n\n').map((section, index) => {
+                        if (section.trim() === '') return null;
+                        
+                        // Check if it's a header (contains emoji and colon)
+                        if (section.includes('📌') || section.includes('👥') || section.includes('🎓') || 
+                            section.includes('🩺') || section.includes('🧘') || section.includes('⚠️') || 
+                            section.includes('🔑') || section.includes('🕒') || section.includes('💡')) {
+                          return (
+                            <div key={index} className="font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                              {section}
+                            </div>
+                          );
+                        }
+                        
+                        // Check if it's a bullet point section
+                        if (section.includes('•')) {
+                          return (
+                            <div key={index} className="ml-4">
+                              {section.split('\n').map((line, lineIndex) => (
+                                <div key={lineIndex} className="mb-1">
+                                  {line}
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        }
+                        
+                        // Regular paragraph
+                        return (
+                          <div key={index} className="mb-2">
+                            {section}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                      <p className="mb-2">
+                        KEA has officially moved into the 3rd Round of UG Counseling for Medical, Dental, Engineering, AYUSH, Veterinary, Nursing, and other professional courses.
+                      </p>
+                      <div className="space-y-2">
+                        <div className="font-semibold text-slate-900 dark:text-slate-100">📌 Background & Reason for 3rd Round:</div>
+                        <div className="ml-4">
+                          <div className="mb-1">• MCC delay: MCC hasn't released 2nd Round results, blocking Medical/Dental seats</div>
+                          <div className="mb-1">• Other courses stuck: Engineering, Veterinary, AYUSH cannot wait for MCC</div>
+                          <div className="mb-1">• Legal allowance: AICTE permits states to conduct rounds up to 10 days before cut-off</div>
+                          <div className="mb-1">• Private college agreement: KEA must return unfilled private seats by 10th Sept</div>
+                        </div>
+                        
+                        <div className="font-semibold text-slate-900 dark:text-slate-100">👥 Who is Eligible to Participate?</div>
+                        <div className="ml-4">
+                          <div className="mb-1">• Choice 1 (Confirmed & joined): You're out - already joined</div>
+                          <div className="mb-1">• Choice 2 (Fee paid, waiting for upgrade): Can re-arrange, delete, or add options</div>
+                          <div className="mb-1">• Choice 3 (Deposit paid): Paid ₹10,000 (engineering) or ₹1 lakh (medical) - can re-enter options</div>
+                          <div className="mb-1">• Left-out/No seat candidates: Must pay ₹10,000 caution deposit to activate login</div>
+                        </div>
+                        
+                        <div className="font-semibold text-slate-900 dark:text-slate-100">⚠️ Critical Rules & Warnings:</div>
+                        <div className="ml-4">
+                          <div className="mb-1">• If allotted in Round 3, admission is COMPULSORY</div>
+                          <div className="mb-1">• No further upgrade, no withdrawal</div>
+                          <div className="mb-1">• Rejecting seats = Caution deposit forfeited + barred from 2026 counseling</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-sm text-muted-foreground">

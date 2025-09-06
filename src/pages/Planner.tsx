@@ -29,9 +29,9 @@ const Planner = () => {
                 <p className="text-slate-600">Simulate your allotment results</p>
               </Card>
             </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
       {/* Development Popup */}
       {showPopup && (
@@ -40,7 +40,7 @@ const Planner = () => {
             <CardContent className="p-8 text-center space-y-6">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
                 <Construction className="h-8 w-8 text-orange-600" />
-              </div>
+          </div>
               
               <div className="space-y-2">
                 <h2 className="text-2xl font-bold text-slate-800">Under Development</h2>
@@ -58,8 +58,8 @@ const Planner = () => {
                   <li>• Plan and prioritize your option entries</li>
                   <li>• Simulate mock allotment results</li>
                   <li>• Get strategic recommendations</li>
-                </ul>
-              </div>
+                    </ul>
+                  </div>
 
               <Button 
                 onClick={() => setShowPopup(false)}
@@ -68,10 +68,10 @@ const Planner = () => {
                 Got it, show me anyway
               </Button>
             </CardContent>
-          </Card>
-        </div>
-      )}
-    </div>
+                </Card>
+          </div>
+        )}
+      </div>
   );
 };
 
