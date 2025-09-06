@@ -45,12 +45,27 @@ export function Layout({ children }: LayoutProps) {
         </div>
         
         {/* Watermark - Global */}
-        <div className="fixed bottom-4 right-4 z-50" key={Date.now()}>
-          <div className="bg-red-500 text-white rounded-full px-4 py-2 text-sm font-bold flex items-center gap-2 shadow-lg animate-pulse">
-            <span>❤️</span>
-            <span>by u/Elegant_Compote9073</span>
-            <span className="text-xs opacity-70">{Math.random().toString(36).substr(2, 5)}</span>
-          </div>
+        <div 
+          style={{
+            position: 'fixed',
+            bottom: '16px',
+            right: '16px',
+            zIndex: 9999,
+            backgroundColor: '#ef4444',
+            color: 'white',
+            padding: '8px 16px',
+            borderRadius: '20px',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            border: '2px solid white'
+          }}
+        >
+          <span>❤️</span>
+          <span>by u/Elegant_Compote9073</span>
         </div>
       </div>
     </SidebarProvider>
