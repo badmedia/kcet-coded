@@ -3,6 +3,7 @@ import { AppSidebar } from "./AppSidebar"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { User, Settings } from "lucide-react"
+import { Footer } from "./Footer"
 
 interface LayoutProps {
   children: React.ReactNode
@@ -42,6 +43,9 @@ export function Layout({ children }: LayoutProps) {
           <main className="flex-1 p-6">
             {children}
           </main>
+          
+          {/* Footer */}
+          <Footer />
         </div>
       </div>
     </SidebarProvider>

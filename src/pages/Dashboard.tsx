@@ -202,10 +202,10 @@ const Dashboard = () => {
       </div>
 
       {/* Disclaimer */}
-      <Card className="bg-slate-900/50 border-slate-700/50 backdrop-blur-sm">
+      <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
         <CardContent className="p-4">
-          <p className="text-sm text-slate-300">
-            <strong className="text-slate-200">Disclaimer:</strong> This is an independent project and is not affiliated with r/kcet community or its moderation team in any way.
+          <p className="text-sm text-amber-800 dark:text-amber-200">
+            <strong className="text-amber-900 dark:text-amber-100">⚠️ Disclaimer:</strong> This is an independent project and is not affiliated with r/kcet community or its moderation team in any way.
           </p>
         </CardContent>
       </Card>
@@ -248,7 +248,7 @@ const Dashboard = () => {
               
               {/* Summary below the news card */}
               {news[0].summary && (
-                <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm">
                   <div className="flex flex-col gap-3 mb-3">
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">📋 Detailed Summary:</h4>
@@ -256,7 +256,7 @@ const Dashboard = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
-                        className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+                        className="text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 font-medium"
                       >
                         {isSummaryExpanded ? 'Show Less' : 'Expand to view full details'}
                       </Button>
@@ -277,7 +277,7 @@ const Dashboard = () => {
                   </div>
                   
                   {isSummaryExpanded ? (
-                    <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed space-y-3">
+                    <div className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed space-y-3">
                       {news[0].summary.split('\n\n').map((section, index) => {
                         if (section.trim() === '') return null;
                         
@@ -314,7 +314,7 @@ const Dashboard = () => {
                       })}
                     </div>
                   ) : (
-                    <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                    <div className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed">
                       <p className="mb-2">
                         KEA has officially moved into the 3rd Round of UG Counseling for Medical, Dental, Engineering, AYUSH, Veterinary, Nursing, and other professional courses.
                       </p>
