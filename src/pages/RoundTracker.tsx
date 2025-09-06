@@ -54,7 +54,7 @@ const RoundTracker = () => {
       startDate: 'TBA',
       endDate: 'TBA',
       progress: 0,
-      description: 'Final round of counseling - Expected to be announced in October 2025',
+      description: 'Final round of counseling - Schedule not yet announced',
       alerts: ['Round 3 schedule not yet announced by KEA', 'This will be the last opportunity for counseling', 'Expected to fill remaining vacant seats']
     }
   ])
@@ -249,8 +249,7 @@ const RoundTracker = () => {
           <div className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
             <p className="text-sm text-orange-800">
-              <strong>Round 3 schedule not yet announced.</strong> This will be your last opportunity for KCET counseling once announced. 
-              Expected to be announced in October 2025.
+              <strong>Round 3 schedule not yet announced.</strong> This will be your last opportunity for KCET counseling once announced.
             </p>
           </div>
           <div className="flex items-start gap-2">

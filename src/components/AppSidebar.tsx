@@ -1,4 +1,4 @@
-import { Calculator, Search, Target, Shuffle, Bell, Table, GitCompare, FileText, DollarSign, BarChart3, BookOpen, Star, Home, FileSpreadsheet, ClipboardList, ExternalLink } from "lucide-react"
+import { Calculator, Search, Target, Shuffle, Bell, Table, GitCompare, FileText, DollarSign, BarChart3, BookOpen, Star, Home, FileSpreadsheet, ClipboardList, ExternalLink, Construction } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import {
   Sidebar,
@@ -11,23 +11,23 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Badge } from "@/components/ui/badge"
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Rank Predictor", url: "/rank-predictor", icon: Calculator },
   { title: "Cutoff Explorer", url: "/cutoff-explorer", icon: Search },
   { title: "College Finder", url: "/college-finder", icon: Target },
-  { title: "Mock Simulator", url: "/mock-simulator", icon: Shuffle },
   { title: "Round Tracker", url: "/round-tracker", icon: Bell },
-  { title: "Seat Matrix", url: "/seat-matrix", icon: Table },
-  { title: "College Compare", url: "/college-compare", icon: GitCompare },
-  { title: "Planner", url: "/planner", icon: ClipboardList },
   { title: "Documents", url: "/documents", icon: FileText },
-  { title: "Fee Calculator", url: "/fee-calculator", icon: DollarSign },
-  { title: "Analytics", url: "/analytics", icon: BarChart3 },
-  { title: "Strategy Guide", url: "/strategy", icon: BookOpen },
-  { title: "Reviews", url: "/reviews", icon: Star },
-  { title: "XLSX Demo", url: "/xlsx-demo", icon: FileSpreadsheet },
+  { title: "Mock Simulator", url: "/mock-simulator", icon: Shuffle, underDevelopment: true },
+  { title: "Seat Matrix", url: "/seat-matrix", icon: Table, underDevelopment: true },
+  { title: "College Compare", url: "/college-compare", icon: GitCompare, underDevelopment: true },
+  { title: "Planner", url: "/planner", icon: ClipboardList, underDevelopment: true },
+  { title: "Fee Calculator", url: "/fee-calculator", icon: DollarSign, underDevelopment: true },
+  { title: "Analytics", url: "/analytics", icon: BarChart3, underDevelopment: true },
+  { title: "Reviews", url: "/reviews", icon: Star, underDevelopment: true },
+  { title: "XLSX Demo", url: "/xlsx-demo", icon: FileSpreadsheet, underDevelopment: true },
   { title: "Reddit Community", url: "https://www.reddit.com/r/kcet/", icon: ExternalLink, external: true },
 ]
 
@@ -54,7 +54,17 @@ export function AppSidebar() {
                         className="flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors text-sidebar-foreground hover:bg-accent hover:text-accent-foreground"
                       >
                         <item.icon className="h-4 w-4 flex-shrink-0" />
-                        {state !== "collapsed" && <span className="truncate">{item.title}</span>}
+                        {state !== "collapsed" && (
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <span className="truncate">{item.title}</span>
+                            {item.underDevelopment && (
+                              <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200 text-xs px-1.5 py-0.5">
+                                <Construction className="h-3 w-3 mr-1" />
+                                Dev
+                              </Badge>
+                            )}
+                          </div>
+                        )}
                       </a>
                     ) : (
                       <NavLink 
@@ -68,7 +78,17 @@ export function AppSidebar() {
                         }
                       >
                         <item.icon className="h-4 w-4 flex-shrink-0" />
-                        {state !== "collapsed" && <span className="truncate">{item.title}</span>}
+                        {state !== "collapsed" && (
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <span className="truncate">{item.title}</span>
+                            {item.underDevelopment && (
+                              <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200 text-xs px-1.5 py-0.5">
+                                <Construction className="h-3 w-3 mr-1" />
+                                Dev
+                              </Badge>
+                            )}
+                          </div>
+                        )}
                       </NavLink>
                     )}
                   </SidebarMenuButton>
