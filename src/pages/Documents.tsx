@@ -147,7 +147,7 @@ const Documents = () => {
         <AlertCircle className="h-5 w-5 text-blue-600" />
         <AlertDescription className="text-blue-800">
           <p className="font-medium">
-            <strong>Need other documents?</strong> Please contact the developer if you require information about any other documents not listed here. 
+            <strong>Missing a document?</strong> Please contact the developer if you notice any documents missing from this listing or if you require information about other documents not mentioned here. 
             It's crucial to ensure everyone has a clear picture of all required documentation.
           </p>
         </AlertDescription>
@@ -213,7 +213,7 @@ const Documents = () => {
             <div className="space-y-3 text-sm">
               <div className="flex items-start gap-2">
                 <TriangleAlert className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
-                <p className="font-bold text-red-800">MANDATORY: 4 COPIES OF EACH DOCUMENT (3 for submission + 1 for own reference)</p>
+                <p className="font-bold text-red-800">4 COPIES OF EACH DOCUMENT (3 for submission + 1 for own reference)</p>
               </div>
               <div className="flex items-start gap-2">
                 <AlertCircle className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
