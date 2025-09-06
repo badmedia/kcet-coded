@@ -224,7 +224,7 @@ const Dashboard = () => {
         <CardContent>
           <div className="space-y-4">
             {/* YouTube Video - First Item */}
-            <a href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID" target="_blank" rel="noreferrer" className="block group">
+            <a href="https://www.youtube.com/watch?v=yjZxYpOBIVg" target="_blank" rel="noreferrer" className="block group">
               <div className="relative overflow-hidden rounded-none border-2 border-foreground/30 bg-card shadow-[6px_6px_0_0_rgba(0,0,0,0.35)] dark:shadow-[6px_6px_0_0_rgba(255,255,255,0.12)] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
                 <img
                   src="/images/kea-ugcet-2025-thumbnail.png"
