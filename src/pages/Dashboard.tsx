@@ -250,7 +250,10 @@ const Dashboard = () => {
               {news[0].summary && (
                 <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">📋 Detailed Summary:</h4>
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">📋 Detailed Summary:</h4>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">(by u/upbeat-sign-7525)</span>
+                    </div>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -297,13 +300,6 @@ const Dashboard = () => {
                           </div>
                         );
                       })}
-                      
-                      {/* Credits section for expanded view */}
-                      <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-600">
-                        <div className="text-xs text-slate-600 dark:text-slate-400">
-                          <strong>Credits:</strong> This detailed summary is based on the comprehensive post by u/upbeat-sign-7525 on r/kcet. Thank you for the thorough analysis and detailed information!
-                        </div>
-                      </div>
                     </div>
                   ) : (
                     <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
@@ -332,12 +328,6 @@ const Dashboard = () => {
                           <div className="mb-1">• If allotted in Round 3, admission is COMPULSORY</div>
                           <div className="mb-1">• No further upgrade, no withdrawal</div>
                           <div className="mb-1">• Rejecting seats = Caution deposit forfeited + barred from 2026 counseling</div>
-                        </div>
-                        
-                        <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-600">
-                          <div className="text-xs text-slate-600 dark:text-slate-400">
-                            <strong>Credits:</strong> This summary is based on the comprehensive post by u/upbeat-sign-7525 on r/kcet. Thank you for the detailed analysis!
-                          </div>
                         </div>
                       </div>
                     </div>
