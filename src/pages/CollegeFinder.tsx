@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { XLSXLoader } from "@/lib/xlsx-loader"
 import { finderStore } from "@/store/finderStore"
+import { loadSettings } from '@/lib/settings'
 
 interface CutoffData {
   institute: string
@@ -668,16 +669,14 @@ const CollegeFinder = () => {
         setAvailableInstitutes(institutes)
         setAvailableRounds(['ALL', ...rounds])
         
-        // Set default values
-        if (years.length > 0) {
-          setSelectedYear(years[0])
-        }
-        if (categories.length > 0) {
-          setUserCategory('ALL')
-        }
-        if (rounds.length > 0) {
-          setSelectedRound('ALL')
-        }
+        // Set default values based on settings
+        const s = loadSettings()
+        const preferredYear = s.defaultYear && years.includes(s.defaultYear) ? s.defaultYear : years[0]
+        setSelectedYear(preferredYear)
+        const preferredRound = s.defaultRound && rounds.includes(s.defaultRound) ? s.defaultRound : 'ALL'
+        setSelectedRound(preferredRound)
+        const preferredCategory = s.defaultCategory && categories.includes(s.defaultCategory) ? s.defaultCategory : 'ALL'
+        setUserCategory(preferredCategory)
         
         console.log('Data loaded successfully:', {
           totalEntries: processedData.cutoffs.length,

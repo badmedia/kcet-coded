@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { loadSettings } from '@/lib/settings'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -49,13 +50,10 @@ const Dashboard = () => {
       try {
         // Prefer the consolidated dataset to ensure latest counts
         // Try tiny summary first for instant load
-        const urls = [
-          '/data/cutoffs-summary.json',
-          '/data/kcet_cutoffs_consolidated.json',
-          '/kcet_cutoffs.json',
-          '/kcet_cutoffs_round3_2025.json',
-          '/kcet_cutoffs2025.json'
-        ]
+        const appSettings = loadSettings()
+        const urls = appSettings.dashboardFastMode
+          ? ['/data/cutoffs-summary.json', '/data/kcet_cutoffs_consolidated.json', '/kcet_cutoffs.json']
+          : ['/data/kcet_cutoffs_consolidated.json', '/kcet_cutoffs.json']
         let response: Response | null = null
         for (const url of urls) {
           const r = await fetch(url, { cache: 'no-store' })
