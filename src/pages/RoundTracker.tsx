@@ -49,13 +49,13 @@ const RoundTracker = () => {
     },
     {
       id: 'round3',
-      name: 'Round 3 (Extended)',
-      status: 'active',
+      name: 'Round 3 (Final Results)',
+      status: 'completed',
       startDate: '2025-09-06',
-      endDate: '2025-09-08',
-      progress: 25,
-      description: 'Final round of counseling - Option entry: Sep 6-8, 2025 (4:00 PM on Sep 6 to 2:00 PM on Sep 8)',
-      alerts: ['Seat matrix and fee details published on Sep 6, 2025', 'Caution deposit payment: Sep 6-8, 2025 (till 1:00 PM)', 'Option entry period: Sep 6 (4:00 PM) to Sep 8 (2:00 PM)', 'Seat cancellation deadline: Sep 8, 2025 (1:00 PM)', 'KITHIBISAKIRO candidates can comeback - must pay ₹10,000 caution deposit', 'Nursing/Yoga courses: Only Government seats in Round 3', 'Medical/Dental: Only re-arrangements allowed (except new colleges)']
+      endDate: '2025-09-13',
+      progress: 100,
+      description: 'Final round of counseling completed - Results declared, admission process ongoing',
+      alerts: ['✅ Third Round Results Declared - Final results published for UGCET courses', '📋 Admission Process: Download Seat Confirmation Slip and report to college with originals before 13th September', '💰 Fee Details: If already paid, balance will be adjusted; if more required, pay via challan/online', '⚠️ Mandatory Reporting: Students allotted seats must join college - Penalty of 5× course fee + 4-year ban if skipped', '🎓 Engineering: Last date of admission (AICTE): 15th September - Unallotted seats will be handed over to colleges', '🩺 Medical/Dental: Admissions depend on MCC schedule (repeatedly delayed) - NMC still approving new colleges & extra seats', '🧘 AYUSH: Fresh option entry from 15–17 September - Will be clubbed with Medical & Dental in next MCC-linked round', '🚫 No Further Rounds: No additional rounds for UGCET courses - Engineering vacant seats will be used for next year DCET Lateral Entry']
     }
   ])
 
@@ -147,7 +147,7 @@ const RoundTracker = () => {
               <CheckCircle className="h-5 w-5 text-green-500" />
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Latest Completed Round</p>
-                <p className="text-2xl font-bold">Round 2</p>
+                <p className="text-2xl font-bold">Round 3</p>
               </div>
             </div>
           </CardContent>
@@ -156,11 +156,11 @@ const RoundTracker = () => {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center space-x-2">
-              <Clock className="h-5 w-5 text-blue-500" />
+              <AlertCircle className="h-5 w-5 text-orange-500" />
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Current Round</p>
-                <p className="text-2xl font-bold text-blue-600">
-                  Round 3 - Started
+                <p className="text-sm font-medium text-muted-foreground">Current Status</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  Admission Process
                 </p>
               </div>
             </div>
@@ -241,32 +241,43 @@ const RoundTracker = () => {
           <div className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
             <p className="text-sm text-orange-800">
-              <strong>Round 2 has concluded!</strong> Final seat allotment results were declared on August 30, 2025. 
-              All students should have reported to their allotted colleges by September 4, 2025.
+              <strong>✅ Round 3 Results Declared!</strong> KEA has published the final results of the 3rd round for UGCET courses (Engineering, Farm Sciences, Veterinary, Nursing, Allied Health Sciences, D. Pharma, etc.).
             </p>
           </div>
           <div className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
             <p className="text-sm text-orange-800">
-              <strong>Round 3 is now active!</strong> Option entry period: September 6 (4:00 PM) to September 8 (2:00 PM), 2025.
+              <strong>📋 Admission Process:</strong> Students must download the Seat Confirmation Slip and report to the allotted college with all original documents before <strong>13th September</strong>.
             </p>
           </div>
           <div className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
             <p className="text-sm text-orange-800">
-              <strong>Important deadlines:</strong> Caution deposit payment till September 8 (1:00 PM), seat cancellation deadline September 8 (1:00 PM).
+              <strong>⚠️ Mandatory Reporting:</strong> Students allotted seats must join the college. If they skip: Penalty of 5× course fee + 4-year ban from KEA counseling.
             </p>
           </div>
           <div className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
             <p className="text-sm text-orange-800">
-              <strong>Eligibility:</strong> Choice 2 & 3 candidates can modify options. KITHIBISAKIRO candidates (no choices in R1&R2) must pay ₹10,000 caution deposit.
+              <strong>🎓 Engineering Deadlines:</strong> Last date of admission (AICTE): 15th September. After that, unallotted seats will be handed over to colleges.
             </p>
           </div>
           <div className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
             <p className="text-sm text-orange-800">
-              <strong>New courses:</strong> B.Tech Mechanical Engineering at VTU CPGS, Kalaburagi (60 seats) now available.
+              <strong>🩺 Medical/Dental:</strong> Admissions depend on MCC schedule (repeatedly delayed). NMC is still approving new colleges & extra seats.
+            </p>
+          </div>
+          <div className="flex items-start gap-2">
+            <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
+            <p className="text-sm text-orange-800">
+              <strong>🧘 AYUSH Courses:</strong> Fresh option entry will open from 15–17 September. Will be clubbed with Medical & Dental allotments in the next MCC-linked round.
+            </p>
+          </div>
+          <div className="flex items-start gap-2">
+            <ArrowRight className="h-4 w-4 text-orange-600 mt-1" />
+            <p className="text-sm text-orange-800">
+              <strong>🚫 No Further Rounds:</strong> There will be no additional rounds of counseling for UGCET and Engineering courses. Engineering vacant seats will be used for next year's DCET Lateral Entry.
             </p>
           </div>
         </CardContent>
