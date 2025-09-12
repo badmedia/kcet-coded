@@ -48,7 +48,9 @@ const Dashboard = () => {
     const loadStats = async () => {
       try {
         // Prefer the consolidated dataset to ensure latest counts
+        // Try tiny summary first for instant load
         const urls = [
+          '/data/cutoffs-summary.json',
           '/data/kcet_cutoffs_consolidated.json',
           '/kcet_cutoffs.json',
           '/kcet_cutoffs_round3_2025.json',
@@ -62,6 +64,24 @@ const Dashboard = () => {
         if (!response) throw new Error('Failed to load data')
         
         const raw = await response.json()
+        
+        // If summary shape, set stats quickly and return
+        if (!Array.isArray(raw) && raw.totals && raw.years && raw.categories) {
+          const sortedYears: { [key: string]: number } = {}
+          Object.keys(raw.years).sort((a, b) => b.localeCompare(a)).forEach(y => { sortedYears[y] = raw.years[y] })
+          setStats({
+            totalRecords: raw.totals.records,
+            totalColleges: raw.totals.colleges,
+            totalBranches: raw.totals.branches,
+            years: sortedYears,
+            categories: raw.categories,
+            topBranches: [],
+            seatTypes: {}
+          })
+          setLoading(false)
+          return
+        }
+
         const cutoffs = Array.isArray(raw) ? raw : (raw.cutoffs || raw.data || raw.cutoffs_data || [])
         
         // Calculate statistics

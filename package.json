@@ -15,6 +15,7 @@
     "fetch:news": "node scripts/fetch-news.mjs",
     "fetch:news:advanced": "node scripts/fetch-news-advanced.mjs",
     "refresh:news": "node scripts/refresh-news.mjs",
+    "build:summary": "node scripts/build-summary.mjs",
     "fetch:kcet": "node scripts/fetch-kcet-news.mjs",
     "news:webhook": "node scripts/news-webhook.mjs",
     "test": "vitest",
