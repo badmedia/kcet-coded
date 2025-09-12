@@ -16,6 +16,8 @@ import { useIsMobile } from "@/hooks/use-mobile"
 import { XLSXLoader } from "@/lib/xlsx-loader"
 import { finderStore } from "@/store/finderStore"
 import { loadSettings } from '@/lib/settings'
+import { Progress } from "@/components/ui/progress"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface CutoffData {
   institute: string
@@ -63,6 +65,9 @@ const CollegeFinder = () => {
   const [matches, setMatches] = useState<CollegeMatch[]>([])
   const [loading, setLoading] = useState(true)
   const [searching, setSearching] = useState(false)
+  const [progress, setProgress] = useState<number>(0)
+  const [tipIndex, setTipIndex] = useState<number>(0)
+  const [secondsLeft, setSecondsLeft] = useState<number>(0)
   const [metadata, setMetadata] = useState<CutoffResponse['metadata'] | null>(null)
   
   // Dynamic options extracted from JSON data
@@ -504,11 +509,46 @@ const CollegeFinder = () => {
     return text
   }
 
+  // Simulated progressive loading while data is fetched and normalized
+  useEffect(() => {
+    if (!loading) return
+    setProgress(0)
+    // Pick a target duration for perceived loading time
+    const start = Date.now()
+    const targetMs = Math.floor(4500 + Math.random() * 2500) // 4.5s - 7s
+    setSecondsLeft(Math.ceil(targetMs / 1000))
+    const id = setInterval(() => {
+      setProgress((p) => Math.min(90, p + Math.random() * 8 + 2))
+      const elapsed = Date.now() - start
+      const remainingMs = Math.max(0, targetMs - elapsed)
+      setSecondsLeft(Math.ceil(remainingMs / 1000))
+    }, 300)
+    return () => clearInterval(id)
+  }, [loading])
+
+  // Helpful rotating tips to keep users engaged
+  const loadingTips: string[] = [
+    'Tip: Use the course picker to filter by specific branches.',
+    'Did you know? Ranks higher than yours indicate better chances.',
+    'Pro tip: Toggle sort to see closest cutoffs first.',
+    'You can search found colleges by name, code, or rank.',
+    'Analytics shows coverage and quick stats about the dataset.'
+  ]
+
+  useEffect(() => {
+    if (!loading) return
+    const id = setInterval(() => {
+      setTipIndex((i) => (i + 1) % loadingTips.length)
+    }, 2500)
+    return () => clearInterval(id)
+  }, [loading])
+
   // Load cutoff data from consolidated data source (kcet_cutoffs.json)
   useEffect(() => {
     const loadData = async () => {
       try {
         console.log('Starting to load data from consolidated data source...')
+        setProgress(10)
         
         // Load from the main consolidated data source - try multiple sources (no-cache)
         const urls = [
@@ -531,9 +571,11 @@ const CollegeFinder = () => {
           throw new Error('Failed to load data from all sources')
         }
         console.log(`Loading data from: ${dataSource}`)
+        setProgress(35)
         
         console.log('Response received, parsing JSON...')
         const data: CutoffResponse = await response.json()
+        setProgress(55)
         
         // Handle different data structures
         let processedData = data
@@ -550,6 +592,7 @@ const CollegeFinder = () => {
           sampleCutoff: processedData.cutoffs?.[0],
           dataKeys: Object.keys(processedData)
         })
+        setProgress(65)
         
         // Check if data has a different structure
         if (!processedData.cutoffs && (processedData as any).data) {
@@ -598,6 +641,7 @@ const CollegeFinder = () => {
             round: (item.round ?? '').toString().trim()
           }
         })
+        setProgress(80)
         
         // Debug: Check for Sri Sairam College in the loaded data
         const sriSairamInData = normalizedCutoffs.filter(c => 
@@ -668,6 +712,7 @@ const CollegeFinder = () => {
         setAvailableCourses(courses)
         setAvailableInstitutes(institutes)
         setAvailableRounds(['ALL', ...rounds])
+        setProgress(90)
         
         // Set default values based on settings
         const s = loadSettings()
@@ -700,7 +745,10 @@ const CollegeFinder = () => {
           variant: "destructive"
         })
       } finally {
-        setLoading(false)
+        setProgress(100)
+        // brief delay so users can see 100% before content swaps
+        setSecondsLeft(0)
+        setTimeout(() => setLoading(false), 200)
       }
     }
     
@@ -710,10 +758,12 @@ const CollegeFinder = () => {
   // Load data from XLSX files automatically
   const loadFromXLSX = async () => {
     setLoading(true)
+    setProgress(10)
     try {
       console.log('Starting to load data from XLSX files...')
       
       const result = await XLSXLoader.loadAllXLSXFiles()
+      setProgress(55)
       
       // Convert XLSX data to match existing format
       const convertedData: CutoffData[] = result.cutoffs.map(item => ({
@@ -728,6 +778,7 @@ const CollegeFinder = () => {
 
       setCutoffs(convertedData)
       setMetadata(null)
+      setProgress(80)
       
       // Extract unique values for options
       const years = [...new Set(convertedData.map(item => item.year))].sort((a, b) => b.localeCompare(a))
@@ -741,6 +792,7 @@ const CollegeFinder = () => {
       setAvailableCourses(courses)
       setAvailableInstitutes(institutes)
       setAvailableRounds(['ALL', ...rounds])
+      setProgress(90)
       
       // Set default values
       if (years.length > 0) {
@@ -765,7 +817,9 @@ const CollegeFinder = () => {
         variant: "destructive"
       })
     } finally {
-      setLoading(false)
+      setProgress(100)
+      setSecondsLeft(0)
+      setTimeout(() => setLoading(false), 200)
     }
   }
 
@@ -1111,9 +1165,83 @@ const CollegeFinder = () => {
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">College Finder</h1>
             <p className="text-sm sm:text-base text-muted-foreground">Find the best colleges based on your KCET rank and preferences</p>
           </div>
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-            <p className="text-muted-foreground mt-2">Loading college data from consolidated data source...</p>
+          <div className="py-8 mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Progress + Tips */}
+            <div className="lg:col-span-1 max-w-2xl w-full mx-auto">
+              <div className="flex items-center gap-3 mb-3 justify-start">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                <p className="text-muted-foreground">Loading college data from consolidated data source…</p>
+              </div>
+              <Progress value={progress} />
+              <div className="flex items-center justify-between mt-1">
+                <div className="text-xs text-muted-foreground">{loadingTips[tipIndex]}</div>
+                <div className="text-right text-xs text-muted-foreground">{Math.round(progress)}% • ~{secondsLeft}s left</div>
+              </div>
+
+              {/* Step checklist tied to progress */}
+              <div className="mt-4 space-y-2 text-sm">
+                {[
+                  { label: 'Fetching dataset', threshold: 20 },
+                  { label: 'Parsing entries', threshold: 45 },
+                  { label: 'Normalizing courses', threshold: 70 },
+                  { label: 'Preparing filters', threshold: 85 },
+                  { label: 'Finalizing', threshold: 100 },
+                ].map((step, idx) => {
+                  const done = progress >= step.threshold
+                  return (
+                    <div key={idx} className={`flex items-center gap-2 ${done ? 'text-green-700' : 'text-muted-foreground'}`}>
+                      <span className={`h-4 w-4 rounded-full border ${done ? 'bg-green-500 border-green-500' : 'border-muted-foreground/40'}`}></span>
+                      <span>{step.label}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Skeleton previews to reduce perceived wait */}
+            <div className="lg:col-span-2">
+              <div className="grid gap-6">
+                {/* Search Criteria skeleton */}
+                <div className="border rounded-md p-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Skeleton className="h-5 w-5 rounded" />
+                    <Skeleton className="h-5 w-40" />
+                  </div>
+                  <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                    {[...Array(6)].map((_, i) => (
+                      <div key={i} className="space-y-2">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-9 w-full" />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 flex gap-2">
+                    <Skeleton className="h-9 w-40" />
+                    <Skeleton className="h-9 w-36" />
+                    <Skeleton className="h-9 w-9" />
+                    <Skeleton className="h-9 w-9" />
+                  </div>
+                </div>
+
+                {/* Results table skeleton */}
+                <div className="border rounded-md p-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Skeleton className="h-5 w-5 rounded" />
+                    <Skeleton className="h-5 w-36" />
+                  </div>
+                  <div className="space-y-2">
+                    {[...Array(6)].map((_, i) => (
+                      <div key={i} className="grid grid-cols-5 gap-3 items-center">
+                        <Skeleton className="h-4 w-full col-span-2" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-16" />
+                        <Skeleton className="h-6 w-20" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
