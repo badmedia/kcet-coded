@@ -9,10 +9,12 @@ import { Badge } from "@/components/ui/badge"
 import { Slider } from "@/components/ui/slider"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Search, MapPin, GraduationCap, TrendingUp, Star, Users, Check, ChevronsUpDown, FileSpreadsheet, Trash2, FileText, AlertCircle, Info, ChevronDown, ChevronUp } from "lucide-react"
+import { Search, MapPin, GraduationCap, TrendingUp, Star, Users, Check, ChevronsUpDown, FileSpreadsheet, Trash2, FileText, AlertCircle, Info, ChevronDown, ChevronUp, BarChart3 } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 import { useToast } from "@/hooks/use-toast"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { XLSXLoader } from "@/lib/xlsx-loader"
+import { finderStore } from "@/store/finderStore"
 
 interface CutoffData {
   institute: string
@@ -60,6 +62,7 @@ const CollegeFinder = () => {
   const [matches, setMatches] = useState<CollegeMatch[]>([])
   const [loading, setLoading] = useState(true)
   const [searching, setSearching] = useState(false)
+  const [metadata, setMetadata] = useState<CutoffResponse['metadata'] | null>(null)
   
   // Dynamic options extracted from JSON data
   const [availableYears, setAvailableYears] = useState<string[]>([])
@@ -84,6 +87,7 @@ const CollegeFinder = () => {
 
   const isMobile = useIsMobile()
   const { toast } = useToast()
+  const navigate = useNavigate()
 
   // Mapping: course codes to canonical names (normalized display) - EXACT MATCHING
   const courseCodeToName: Record<string, string> = {
@@ -505,32 +509,26 @@ const CollegeFinder = () => {
       try {
         console.log('Starting to load data from consolidated data source...')
         
-        // Load from the main consolidated data source - try multiple sources
-        let response = await fetch('./kcet_cutoffs.json')
-        let dataSource = 'kcet_cutoffs.json'
-        
-        if (!response.ok) {
-          // Try alternative data source
-          response = await fetch('./data/kcet_cutoffs_consolidated.json')
-          dataSource = 'data/kcet_cutoffs_consolidated.json'
-          
-          if (!response.ok) {
-            // Try public directory
-            response = await fetch('./public/data/kcet_cutoffs_consolidated.json')
-            dataSource = 'public/data/kcet_cutoffs_consolidated.json'
-            
-            if (!response.ok) {
-              // Try the 2025 data file
-              response = await fetch('./kcet_cutoffs2025.json')
-              dataSource = 'kcet_cutoffs2025.json'
-              
-              if (!response.ok) {
-                throw new Error(`Failed to load data from all sources: ${response.status} ${response.statusText}`)
-              }
-            }
+        // Load from the main consolidated data source - try multiple sources (no-cache)
+        const urls = [
+          '/kcet_cutoffs.json',
+          '/data/kcet_cutoffs_consolidated.json',
+          '/kcet_cutoffs2025.json'
+        ]
+        let response: Response | null = null
+        let dataSource = ''
+        for (const url of urls) {
+          const bust = `${url}${url.includes('?') ? '&' : '?'}v=${Date.now()}`
+          const r = await fetch(bust, { cache: 'no-store' })
+          if (r.ok) {
+            response = r
+            dataSource = url
+            break
           }
         }
-        
+        if (!response) {
+          throw new Error('Failed to load data from all sources')
+        }
         console.log(`Loading data from: ${dataSource}`)
         
         console.log('Response received, parsing JSON...')
@@ -610,6 +608,7 @@ const CollegeFinder = () => {
         }
         
         setCutoffs(normalizedCutoffs)
+        setMetadata(processedData.metadata ?? null)
         
         // Populate options from metadata sections when available
         const years = processedData.metadata?.years_covered ? [...processedData.metadata.years_covered] : [...new Set(normalizedCutoffs.map(item => item.year))].sort((a, b) => b.localeCompare(a))
@@ -725,6 +724,7 @@ const CollegeFinder = () => {
       }))
 
       setCutoffs(convertedData)
+      setMetadata(null)
       
       // Extract unique values for options
       const years = [...new Set(convertedData.map(item => item.year))].sort((a, b) => b.localeCompare(a))
@@ -950,6 +950,17 @@ const CollegeFinder = () => {
 
       // Show all matches (no limit)
       setMatches(matchesWithScores)
+      // Publish to shared store for Analytics
+      finderStore.setState({
+        userRank,
+        userCategory,
+        selectedYear,
+        selectedRound,
+        selectedInstitute,
+        selectedCourses,
+        locationFilter,
+        matches: matchesWithScores,
+      })
       
       console.log(`Search completed. Found ${matchesWithScores.length} matches, showing top 50`)
       
@@ -1079,6 +1090,16 @@ const CollegeFinder = () => {
     console.log('=== End Debug ===')
   }
 
+  // Compute analytics from metadata with fallback to computed values from cutoffs
+  const analytics = (() => {
+    const totalEntries = metadata?.total_entries ?? cutoffs.length
+    const totalInstitutes = metadata?.total_institutes ?? new Set(cutoffs.map(c => c.institute_code)).size
+    const totalCourses = metadata?.total_courses ?? new Set(cutoffs.map(c => c.course)).size
+    const totalCategories = metadata?.total_categories ?? new Set(cutoffs.map(c => c.category)).size
+    const yearsCovered = metadata?.years_covered ?? Array.from(new Set(cutoffs.map(c => c.year))).sort((a, b) => b.localeCompare(a))
+    return { totalEntries, totalInstitutes, totalCourses, totalCategories, yearsCovered }
+  })()
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -1152,7 +1173,11 @@ const CollegeFinder = () => {
                 id="rank"
                 type="number"
                 value={userRank}
-                onChange={(e) => setUserRank(parseInt(e.target.value) || 0)}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value) || 0
+                  setUserRank(val)
+                  finderStore.setState({ userRank: val })
+                }}
                 placeholder="Enter your rank"
               />
               <p className="text-xs text-muted-foreground">
@@ -1318,6 +1343,16 @@ const CollegeFinder = () => {
                         setMaxRank(300000)
                         setMatches([])
                         setCollegeSearchTerm("")
+                        finderStore.setState({
+                          userRank: 50000,
+                          userCategory: '',
+                          selectedYear: '',
+                          selectedRound: '',
+                          selectedInstitute: '',
+                          selectedCourses: [],
+                          locationFilter: '',
+                          matches: [],
+                        })
                       }}
                       className="px-3"
                       title="Clear all filters"
@@ -1442,6 +1477,68 @@ const CollegeFinder = () => {
                       </div>
                     </div>
                   )}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Analytics */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Analytics
+            </CardTitle>
+            <div className="text-sm text-muted-foreground">
+              Consolidated from JSON data{metadata?.last_updated ? ` • Last updated ${metadata.last_updated}` : ''}
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-4">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => {
+                  // Ensure latest state is in store then navigate SPA
+                  finderStore.setState({
+                    userRank,
+                    userCategory,
+                    selectedYear,
+                    selectedRound,
+                    selectedInstitute,
+                    selectedCourses,
+                    locationFilter,
+                    matches,
+                  })
+                  navigate('/analytics')
+                }}
+              >
+                <BarChart3 className="h-4 w-4" />
+                View Analytics
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div className="p-4 rounded-md border">
+                <div className="text-xs text-muted-foreground">Total Entries</div>
+                <div className="text-xl font-semibold">{analytics.totalEntries.toLocaleString()}</div>
+              </div>
+              <div className="p-4 rounded-md border">
+                <div className="text-xs text-muted-foreground">Institutes</div>
+                <div className="text-xl font-semibold">{analytics.totalInstitutes.toLocaleString()}</div>
+              </div>
+              <div className="p-4 rounded-md border">
+                <div className="text-xs text-muted-foreground">Courses</div>
+                <div className="text-xl font-semibold">{analytics.totalCourses.toLocaleString()}</div>
+              </div>
+              <div className="p-4 rounded-md border">
+                <div className="text-xs text-muted-foreground">Categories</div>
+                <div className="text-xl font-semibold">{analytics.totalCategories.toLocaleString()}</div>
+              </div>
+              <div className="p-4 rounded-md border col-span-2 sm:col-span-3 lg:col-span-1">
+                <div className="text-xs text-muted-foreground">Years Covered</div>
+                <div className="text-sm font-medium truncate" title={analytics.yearsCovered.join(', ')}>
+                  {analytics.yearsCovered.slice(0, 4).join(', ')}{analytics.yearsCovered.length > 4 ? '…' : ''}
                 </div>
               </div>
             </div>

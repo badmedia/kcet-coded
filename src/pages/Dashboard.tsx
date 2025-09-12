@@ -224,11 +224,11 @@ const Dashboard = () => {
         <CardContent>
           <div className="space-y-4">
             {/* YouTube Video - First Item */}
-            <a href="https://www.youtube.com/watch?v=yjZxYpOBIVg" target="_blank" rel="noreferrer" className="block group">
+            <a href="https://youtu.be/5gdCJ0yo8uc?si=fpklluR2TCVw6X5U" target="_blank" rel="noreferrer" className="block group">
               <div className="relative overflow-hidden rounded-none border-2 border-foreground/30 bg-card shadow-[6px_6px_0_0_rgba(0,0,0,0.35)] dark:shadow-[6px_6px_0_0_rgba(255,255,255,0.12)] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
                 <img
                   src="/images/kea-ugcet-2025-thumbnail.png"
-                  alt="KCET 2025 Important Updates - YouTube Video"
+                  alt="KEA Third Round UG CET Counseling Update - YouTube Video"
                   className="w-full h-[300px] object-cover group-hover:scale-[1.02] transition-transform"
                   loading="lazy"
                 />
@@ -246,7 +246,7 @@ const Dashboard = () => {
                     <span className="opacity-80">Latest Update</span>
                   </div>
                   <h3 className="mt-1 text-white text-xl font-extrabold leading-snug tracking-tight">
-                    KCET 2025 Important Updates & Guidelines
+                    KEA Third Round UG CET Counseling Update (By Prasanna Sir)
                   </h3>
                 </div>
               </div>
@@ -256,7 +256,7 @@ const Dashboard = () => {
             <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
               <div className="flex flex-col gap-3 mb-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">📢 KEA Round 3 Counselling - Complete Guide</h4>
+                  <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">📢 KEA – Third Round UG CET Counseling Update (By Prasanna Sir)</h4>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -269,7 +269,7 @@ const Dashboard = () => {
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950 px-2 py-1 rounded">by u/upbeat-sign-7525</span>
                   <a 
-                    href="https://www.reddit.com/r/kcet/comments/1n9y0ta/kea_round_3_counselling_announcement_as_per_new/"
+                    href="https://www.reddit.com/r/kcet/comments/1ne49dq/kea_third_round_ug_cet_counseling_update_by/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs font-medium text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950 px-2 py-1 rounded hover:bg-orange-100 dark:hover:bg-orange-900 transition-colors"
@@ -281,170 +281,155 @@ const Dashboard = () => {
               
               {isSummaryExpanded ? (
                 <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed space-y-4">
-                  {/* Schedule */}
+                  {/* News */}
                   <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
-                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🕒 ROUND 3 SCHEDULE:</div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">📢 News</div>
                     <div className="ml-4 space-y-1">
-                      <div>• 🪑 Seat Matrix: 06 Sept</div>
-                      <div>• 💰 Caution Deposit Payment: 06 – 08 Sept (till 1 PM)</div>
-                      <div>• 📝 Option Entry/Modify/Delete: 06 Sept (4 PM) – 08 Sept (2 PM)</div>
-                      <div>• ❌ Seat Surrender (Round 1 & 2): On/Before 08 Sept, 1 PM (₹5,000 deducted)</div>
+                      <div>• <strong>Third Round Results Declared:</strong> KEA has published the final results of the 3rd round for UGCET courses (Engineering, Farm Sciences, Veterinary, Nursing, Allied Health Sciences, D. Pharma, etc.)</div>
+                      <div>• Seats allotted strictly as per the options entered by students</div>
                     </div>
                   </div>
 
-                  {/* Why 3rd Round */}
+                  {/* Admission Process */}
                   <div>
-                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">📌 Why a 3rd Round?</div>
-                    <div className="ml-4 space-y-1">
-                      <div>• <strong>MCC Delay:</strong> MCC (Medical Counselling Committee) hasn't completed 2nd Round results for Medical/Dental, blocking these seats</div>
-                      <div>• <strong>Course Stuck:</strong> Other courses (Engg/AYUSH/Vet) can't wait for MCC. KEA must move forward</div>
-                      <div>• <strong>Legal Window:</strong> AICTE allows states to conduct counseling up to 10 days before cut-off. KEA had requested extension but no reply yet</div>
-                      <div>• <strong>Private College Agreement:</strong> KEA must return unfilled private seats to colleges by Sept 10. This forced the round</div>
-                      <div>• <strong>AICTE Status:</strong> AICTE has not yet replied to KEA's request for deadline extension</div>
-                    </div>
-                  </div>
-
-                  {/* Eligibility */}
-                  <div>
-                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">👥 Who is Eligible?</div>
-                    <div className="ml-4 space-y-3">
-                      <div><strong>✅ Choice 2 candidates:</strong> Paid fees earlier, waiting for upgrade. Can re-arrange, delete, or add new colleges (except Medical/Dental). No fresh option entry required.</div>
-                      <div><strong>✅ Choice 3 candidates:</strong> Paid ₹10,000 (Engg) or ₹1 lakh (Medical). Can re-enter options. No fresh option entry required.</div>
-                      <div><strong>✅ Left-out candidates (MUST pay ₹10,000 caution deposit):</strong>
-                        <div className="ml-4 mt-1 space-y-1">
-                          <div>• Did not select any choice in Round 1 & 2</div>
-                          <div>• Selected Choice 2 but didn't pay the fee</div>
-                          <div>• Selected Choice 3 but didn't pay caution deposit</div>
-                          <div>• Seat unallotted candidates</div>
-                          <div>• <strong>KITHBISAKIRO CANDIDATES CAN COMEBACK</strong></div>
-                        </div>
-                      </div>
-                      <div><strong>❌ Choice 1 (confirmed & joined):</strong> Already admitted. Out of counseling</div>
-                    </div>
-                  </div>
-
-                  {/* Engineering & Professional Courses */}
-                  <div>
-                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🎓 Engineering & Professional Courses</div>
-                    <div className="ml-4 space-y-1">
-                      <div>• ~8,000 seats left after Round 2</div>
-                      <div>• Fresh colleges/courses can be added</div>
-                      <div>• 17 Govt. Engineering Colleges with 50% fee concession</div>
-                      <div>• Fees as low as ₹20k–25k/year in govt colleges</div>
-                      <div>• <strong>KEA Advice:</strong> Don't waste your rank by keeping limited options</div>
-                    </div>
-                  </div>
-
-                  {/* Medical & Dental */}
-                  <div>
-                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🩺 Medical & Dental Courses</div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">📋 Admission Process</div>
                     <div className="ml-4 space-y-2">
-                      <div><strong>Option Entry Portal:</strong> Enabled for Choice 2 & 3 candidates who have done option entry till 26-08-2025, 1:00 PM</div>
-                      <div><strong>Seat Increases:</strong> 8 Govt. Medical Colleges got +50 seats each (officially added in matrix)</div>
-                      <div><strong>Newly Added Colleges:</strong>
+                      <div>• Students must download the Seat Confirmation Slip and report to the allotted college with all original documents before <strong>13th September</strong></div>
+                      <div><strong>Fee Details:</strong>
                         <div className="ml-4 mt-1 space-y-1">
-                          <div>• BGS Dental</div>
-                          <div>• Farooki Dental (40 seats at Farookia Dental College, Mysuru)</div>
-                          <div>• JNMC Medical (12 medical seats at JNMC College, Belagavi)</div>
-                          <div>• BGS Global Dental College (50 seats)</div>
+                          <div>• If already paid, balance will be adjusted</div>
+                          <div>• If more is required → pay via challan/online</div>
+                          <div>• If less is required → refund will be credited to the student</div>
+                          <div>• SC/ST students (income under ₹1 lakh) who paid ₹10,000 will get full refund</div>
                         </div>
                       </div>
-                      <div><strong>NRI Quota (first time ever):</strong> 51 NRI seats introduced across 8 govt. colleges at ₹25 lakh/year. If NRI seats remain vacant, they will go to "Others" at same fee</div>
-                      <div><strong>Option Entry Rules:</strong>
-                        <div className="ml-4 mt-1 space-y-1">
-                          <div>• No fresh option entry or new college addition allowed (except newly released colleges)</div>
-                          <div>• Candidates can modify/rearrange/delete existing options</div>
-                          <div>• 8000 virtual vacancies will be allotted to new seats of that 8 colleges</div>
-                          <div>• NRI category candidates (Round 1 admitted) and others may add 8 newly added NRI seats</div>
-                        </div>
-                      </div>
-                      <div><strong>Choice 3 Medical Candidates:</strong> 64 students paid ₹1 lakh but didn't press "Agree" button earlier. KEA will now consider them</div>
-                      <div><strong>MCC Update:</strong> If MCC releases results on 12th September, KEA will provide quit option and re-run allotment (Unlikely as per current updates - KEA is doubtful of MCC results won't be out on 12th Sept)</div>
+                      <div>• No further choice entry in 3rd round → only admission</div>
                     </div>
                   </div>
 
-                  {/* Nursing & BNYS */}
-                  <div>
-                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🧘 Nursing & BNYS (Yoga/Naturopathy)</div>
-                    <div className="ml-4 space-y-1">
-                      <div>• Round 3 will have only Government seat allotments</div>
-                      <div>• No private quota allotments in these courses</div>
-                    </div>
-                  </div>
-
-                  {/* Critical Rules */}
+                  {/* Mandatory Reporting & Penalty */}
                   <div className="bg-red-50 dark:bg-red-950 p-3 rounded-lg">
-                    <div className="font-semibold text-red-900 dark:text-red-100 mb-2">⚠️ CRITICAL RULES & WARNINGS</div>
+                    <div className="font-semibold text-red-900 dark:text-red-100 mb-2">⚠️ Mandatory Reporting & Penalty</div>
                     <div className="ml-4 space-y-1">
-                      <div>• <strong>If allotted in Round 3 → Admission is COMPULSORY</strong></div>
-                      <div>• No further upgrades, no withdrawal</div>
-                      <div>• Rejecting/Skipping seat = Heavy penalty:</div>
-                      <div className="ml-4">- Deposit forfeited</div>
-                      <div className="ml-4">- Candidate barred from 2026 KEA counseling</div>
-                      <div>• <strong>Enter only those colleges/courses where you are ready to join</strong></div>
+                      <div>• Students allotted seats must join the college</div>
+                      <div>• If they skip:</div>
+                      <div className="ml-4">- Penalty of 5× course fee</div>
+                      <div className="ml-4">- 4-year ban from KEA counseling</div>
+                      <div>• KEA IT team is tracking students who didn't report in earlier rounds; police action was taken last year against intentional seat blocking</div>
                     </div>
                   </div>
 
-                  {/* New Course Approval */}
-                  <div className="bg-green-50 dark:bg-green-950 p-3 rounded-lg">
-                    <div className="font-semibold text-green-900 dark:text-green-100 mb-2">📢 New Course Approval</div>
-                    <div className="ml-4">
-                      <div><strong>Institution:</strong> Visvesvaraya Technological University (VTU) CPGS, Kalaburagi</div>
-                      <div><strong>Programme:</strong> B.Tech Mechanical Engineering</div>
-                      <div><strong>Intake:</strong> 60 seats</div>
-                      <div><strong>Academic Year:</strong> From 2025–26 onwards</div>
+                  {/* Medical & Dental Seats */}
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🔹 Medical & Dental Seats</div>
+                    <div className="ml-4 space-y-2">
+                      <div><strong>Dental Confusion:</strong>
+                        <div className="ml-4 mt-1 space-y-1">
+                          <div>• Admissions depend on MCC schedule, which is repeatedly delayed</div>
+                          <div>• NMC is still approving new colleges & extra seats (e.g., Farooqui Medical College – 100 seats, PS Medical College – +50 seats). Seat matrix not yet received</div>
+                          <div>• Provisional allotment shown now; admissions only after MCC finalizes</div>
+                          <div>• In earlier rounds, some dental seats were shown without deposit collection</div>
+                          <div>• In 3rd round, fresh candidates must pay at least ₹10,000 deposit</div>
+                          <div>• Students facing issues can email KEA; cases will be considered. No need to panic</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Final Note */}
+                  {/* AYUSH Courses */}
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🧘 AYUSH Courses</div>
+                    <div className="ml-4 space-y-1">
+                      <div>• Fresh option entry for AYUSH will open from 15–17 September</div>
+                      <div>• Choices 1, 2 & 4 will be allowed</div>
+                      <div>• AYUSH will be clubbed with Medical & Dental allotments in the next MCC-linked round</div>
+                    </div>
+                  </div>
+
+                  {/* Engineering Specific */}
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🎓 Engineering Specific</div>
+                    <div className="ml-4 space-y-2">
+                      <div>• Last date of admission (ACC TO AICTE): <strong>15th September</strong></div>
+                      <div>• After that, unallotted seats will be handed over to colleges</div>
+                      <div>• List of unallotted seats will be published in KEA website</div>
+                      <div>• Only students with a valid KCET rank who have not been allotted through KEA can approach colleges directly for vacant seats</div>
+                      <div><strong>Who cannot take admission directly to colleges:</strong>
+                        <div className="ml-4 mt-1 space-y-1">
+                          <div>• Students who have already been allotted and admitted through KEA</div>
+                          <div>• Students who have not written KCET and therefore do not have a KCET rank</div>
+                        </div>
+                      </div>
+                      <div>• Government Engineering Colleges: Fees only ₹23,000 per year (5 branches available). 17 govt + 8 aided colleges listed on KEA website</div>
+                    </div>
+                  </div>
+
+                  {/* Important Note for Medical Aspirants */}
                   <div className="bg-yellow-50 dark:bg-yellow-950 p-3 rounded-lg">
-                    <div className="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">📝 Final Note</div>
-                    <div className="ml-4">
-                      <div>• Schedule may change if AICTE extends the deadline</div>
-                      <div>• KEA has informed private colleges that remaining seats will be surrendered 5 days before the deadline</div>
-                      <div>• <strong>Important:</strong> Round 3 allotted candidates must compulsorily join the allotted college</div>
-                      <div>• If you don't join, the caution deposit will be forfeited and you will be barred from participating in next year's counselling</div>
-                      <div>• <strong>👉 Enter only those colleges/courses where you are ready to join</strong></div>
+                    <div className="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">📝 Important Note for Medical Aspirants</div>
+                    <div className="ml-4 space-y-1">
+                      <div>• Students allotted seats in UG CET courses (Eng/Agri/Nursing/etc.) but waiting for Medical/Dental should go and get admitted to allotted college</div>
+                      <div>• Later they will be allowed to upgrade later in next round you will be allowed to leave that course and get admitted to medical/dental</div>
+                      <div>• Already deposited fees will be adjusted/refunded accordingly</div>
+                    </div>
+                  </div>
+
+                  {/* Action Required */}
+                  <div className="bg-green-50 dark:bg-green-950 p-3 rounded-lg">
+                    <div className="font-semibold text-green-900 dark:text-green-100 mb-2">✅ Action Required for Students:</div>
+                    <div className="ml-4 space-y-1">
+                      <div>• If allotted in UGCET 3rd round → Download seat slip, pay fee if needed, and report to college with originals by 13th Sept</div>
+                      <div>• Engineering admissions close on 15th Sept (AS PER AICTE) – check KEA website for vacant seats</div>
+                      <div>• Medical/Dental/AYUSH aspirants → Wait for MCC's next schedule, KEA will notify</div>
+                    </div>
+                  </div>
+
+                  {/* Important Note */}
+                  <div className="bg-orange-50 dark:bg-orange-950 p-3 rounded-lg">
+                    <div className="font-semibold text-orange-900 dark:text-orange-100 mb-2">🚫 NOTE:</div>
+                    <div className="ml-4 space-y-1">
+                      <div>• <strong>No Further Rounds for UGCET Courses:</strong> There will be no additional rounds of counseling for UGCET and Engineering courses</div>
+                      <div>• Engineering vacant seats left over by Medical/Dental candidates (after the AICTE admission deadline) will be carried forward and used for next year's DCET Lateral Entry</div>
+                      <div>• Veterinary and Agriculture vacant seats will be managed as per the decision of the respective universities</div>
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
                   <p className="mb-3 font-semibold">
-                    🚨 KEA has officially announced the 3rd Round of UG counseling for Medical, Dental, Engineering, AYUSH, Veterinary, Nursing, BNYS and other professional courses.
+                    📢 KEA has published the final results of the 3rd round for UGCET courses (Engineering, Farm Sciences, Veterinary, Nursing, Allied Health Sciences, D. Pharma, etc.).
                   </p>
                   
                   <div className="space-y-3">
                     <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg">
-                      <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🕒 SCHEDULE:</div>
+                      <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">📋 ADMISSION PROCESS:</div>
                       <div className="text-xs space-y-1">
-                        <div>• Seat Matrix: 06 Sept | Caution Deposit: 06-08 Sept (till 1 PM)</div>
-                        <div>• Option Entry: 06 Sept (4 PM) – 08 Sept (2 PM)</div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">👥 ELIGIBILITY:</div>
-                      <div className="ml-4 space-y-1 text-xs">
-                        <div>• <strong>Choice 2:</strong> Can re-arrange, delete, or add options (except Medical/Dental)</div>
-                        <div>• <strong>Choice 3:</strong> Can re-enter options (paid ₹10k/₹1L)</div>
-                        <div>• <strong>Left-out candidates:</strong> Must pay ₹10,000 caution deposit</div>
+                        <div>• Download Seat Confirmation Slip and report to college with originals before <strong>13th September</strong></div>
+                        <div>• Fee adjustment: If already paid, balance will be adjusted; if more required, pay via challan/online</div>
                       </div>
                     </div>
 
                     <div className="bg-red-50 dark:bg-red-950 p-3 rounded-lg">
-                      <div className="font-semibold text-red-900 dark:text-red-100 mb-2">⚠️ CRITICAL WARNING:</div>
+                      <div className="font-semibold text-red-900 dark:text-red-100 mb-2">⚠️ MANDATORY REPORTING:</div>
                       <div className="text-xs">
-                        <strong>If allotted in Round 3, admission is COMPULSORY. Rejecting = Deposit forfeited + Barred from 2026 counseling.</strong>
+                        <strong>Students allotted seats must join the college. If they skip: Penalty of 5× course fee + 4-year ban from KEA counseling.</strong>
                       </div>
                     </div>
 
                     <div>
                       <div className="font-semibold text-slate-900 dark:text-slate-100 mb-2">🎓 KEY UPDATES:</div>
                       <div className="ml-4 space-y-1 text-xs">
-                        <div>• Engineering: ~8,000 seats vacant, fresh entry allowed</div>
-                        <div>• Medical: 8 govt colleges got +50 seats each, NRI quota introduced</div>
-                        <div>• Nursing/BNYS: Only Govt quota seats in Round 3</div>
+                        <div>• <strong>Engineering:</strong> Last date of admission (AICTE): 15th September. Unallotted seats will be handed over to colleges</div>
+                        <div>• <strong>Medical/Dental:</strong> Admissions depend on MCC schedule (repeatedly delayed). NMC still approving new colleges & extra seats</div>
+                        <div>• <strong>AYUSH:</strong> Fresh option entry from 15–17 September. Will be clubbed with Medical & Dental in next MCC-linked round</div>
+                        <div>• <strong>Government Engineering:</strong> Fees only ₹23,000 per year (5 branches available)</div>
+                      </div>
+                    </div>
+
+                    <div className="bg-yellow-50 dark:bg-yellow-950 p-3 rounded-lg">
+                      <div className="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">📝 IMPORTANT NOTE:</div>
+                      <div className="text-xs">
+                        <strong>No Further Rounds for UGCET Courses. Engineering vacant seats will be used for next year's DCET Lateral Entry.</strong>
                       </div>
                     </div>
                   </div>
