@@ -44,6 +44,14 @@ export function usePWA() {
         .catch((error) => {
           console.error('Service Worker registration failed:', error);
         });
+      
+      // Listen for messages from service worker
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'FORCE_RELOAD') {
+          console.log('Service Worker: Force reload requested');
+          window.location.reload();
+        }
+      });
     }
 
     // Add event listeners

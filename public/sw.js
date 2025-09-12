@@ -1,6 +1,6 @@
-const CACHE_NAME = 'kcet-coded-v1.0.0';
-const STATIC_CACHE = 'kcet-coded-static-v1.0.0';
-const DYNAMIC_CACHE = 'kcet-coded-dynamic-v1.0.0';
+const CACHE_NAME = 'kcet-coded-v1.0.1';
+const STATIC_CACHE = 'kcet-coded-static-v1.0.1';
+const DYNAMIC_CACHE = 'kcet-coded-dynamic-v1.0.1';
 
 // Files to cache for offline functionality
 const STATIC_FILES = [
@@ -54,6 +54,14 @@ self.addEventListener('activate', (event) => {
         console.log('Service Worker: Activated');
         return self.clients.claim();
       })
+      .then(() => {
+        // Notify all clients to reload
+        return self.clients.matchAll().then(clients => {
+          clients.forEach(client => {
+            client.postMessage({ type: 'FORCE_RELOAD' });
+          });
+        });
+      })
   );
 });
 
@@ -75,7 +83,32 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(request)
       .then((cachedResponse) => {
-        // Return cached version if available
+        // For HTML and JS files, always try network first to get latest version
+        const isHtmlOrJs = url.pathname.endsWith('.html') || url.pathname.endsWith('.js') || url.pathname === '/' || url.pathname.endsWith('.tsx') || url.pathname.endsWith('.ts');
+        
+        if (isHtmlOrJs) {
+          // Always fetch from network for HTML/JS files
+          return fetch(request)
+            .then((networkResponse) => {
+              if (networkResponse && networkResponse.status === 200) {
+                // Update cache with fresh content
+                const responseToCache = networkResponse.clone();
+                caches.open(DYNAMIC_CACHE)
+                  .then((cache) => {
+                    cache.put(request, responseToCache);
+                  });
+                return networkResponse;
+              }
+              // Fallback to cache if network fails
+              return cachedResponse || networkResponse;
+            })
+            .catch((error) => {
+              console.log('Service Worker: Network request failed, serving from cache', request.url, error);
+              return cachedResponse || caches.match('/index.html');
+            });
+        }
+        
+        // Return cached version if available for other files
         if (cachedResponse) {
           console.log('Service Worker: Serving from cache', request.url);
           return cachedResponse;
