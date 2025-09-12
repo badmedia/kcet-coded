@@ -42,10 +42,10 @@ const Analytics = () => {
       setError("")
       try {
         const urls = [
-          '/kcet_cutoffs.json',
           '/data/kcet_cutoffs_consolidated.json',
-          '/kcet_cutoffs2025.json',
-          '/kcet_cutoffs_round3_2025.json'
+          '/kcet_cutoffs.json',
+          '/kcet_cutoffs_round3_2025.json',
+          '/kcet_cutoffs2025.json'
         ]
 
         let response: Response | null = null

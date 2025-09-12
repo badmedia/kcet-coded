@@ -73,13 +73,13 @@ const CutoffExplorer = () => {
       console.log('Loading cutoff data from local JSON file...')
       
       // Try multiple data sources with fallback
-      let response = await fetch('/kcet_cutoffs.json', { cache: 'no-store' })
-      let dataSource = 'kcet_cutoffs.json'
+      let response = await fetch('/data/kcet_cutoffs_consolidated.json', { cache: 'no-store' })
+      let dataSource = 'data/kcet_cutoffs_consolidated.json'
       
       if (!response.ok) {
-        // Try alternative data source
-        response = await fetch('/data/kcet_cutoffs_consolidated.json', { cache: 'no-store' })
-        dataSource = 'data/kcet_cutoffs_consolidated.json'
+        // Try root consolidated
+        response = await fetch('/kcet_cutoffs.json', { cache: 'no-store' })
+        dataSource = 'kcet_cutoffs.json'
         
         if (!response.ok) {
           // Try public directory

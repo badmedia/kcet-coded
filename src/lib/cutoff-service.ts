@@ -38,8 +38,8 @@ export class CutoffService {
       const sources = [
         '/data/kcet_cutoffs_consolidated.json',
         '/kcet_cutoffs.json',
-        '/kcet_cutoffs2025.json',
-        '/kcet_cutoffs_round3_2025.json'
+        '/kcet_cutoffs_round3_2025.json',
+        '/kcet_cutoffs2025.json'
       ];
       let response: Response | null = null;
       for (const url of sources) {

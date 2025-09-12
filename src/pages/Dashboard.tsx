@@ -47,11 +47,22 @@ const Dashboard = () => {
   useEffect(() => {
     const loadStats = async () => {
       try {
-        const response = await fetch('/kcet_cutoffs.json')
-        if (!response.ok) throw new Error('Failed to load data')
+        // Prefer the consolidated dataset to ensure latest counts
+        const urls = [
+          '/data/kcet_cutoffs_consolidated.json',
+          '/kcet_cutoffs.json',
+          '/kcet_cutoffs_round3_2025.json',
+          '/kcet_cutoffs2025.json'
+        ]
+        let response: Response | null = null
+        for (const url of urls) {
+          const r = await fetch(url, { cache: 'no-store' })
+          if (r.ok) { response = r; break }
+        }
+        if (!response) throw new Error('Failed to load data')
         
-        const data = await response.json()
-        const cutoffs = data.cutoffs || []
+        const raw = await response.json()
+        const cutoffs = Array.isArray(raw) ? raw : (raw.cutoffs || raw.data || raw.cutoffs_data || [])
         
         // Calculate statistics
         const colleges = new Map()
@@ -95,14 +106,18 @@ const Dashboard = () => {
           .sort((a, b) => b.count - a.count)
           .slice(0, 5)
         
+        // Sort years descending for display
+        const sortedYears: { [key: string]: number } = {}
+        Object.keys(years).sort((a, b) => b.localeCompare(a)).forEach(y => { sortedYears[y] = years[y] })
+
         setStats({
           totalRecords: cutoffs.length,
           totalColleges: colleges.size,
           totalBranches: branches.size,
-          years,
+          years: sortedYears,
           categories,
           topBranches,
-          seatTypes: rounds // Using rounds instead of seatTypes
+          seatTypes: rounds
         })
       } catch (error) {
         console.error('Error loading stats:', error)

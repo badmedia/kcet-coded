@@ -511,10 +511,10 @@ const CollegeFinder = () => {
         
         // Load from the main consolidated data source - try multiple sources (no-cache)
         const urls = [
-          '/kcet_cutoffs.json',
           '/data/kcet_cutoffs_consolidated.json',
-          '/kcet_cutoffs2025.json',
-          '/kcet_cutoffs_round3_2025.json'
+          '/kcet_cutoffs.json',
+          '/kcet_cutoffs_round3_2025.json',
+          '/kcet_cutoffs2025.json'
         ]
         let response: Response | null = null
         let dataSource = ''
@@ -611,7 +611,9 @@ const CollegeFinder = () => {
         setMetadata(processedData.metadata ?? null)
         
         // Populate options from metadata sections when available
-        const years = processedData.metadata?.years_covered ? [...processedData.metadata.years_covered] : [...new Set(normalizedCutoffs.map(item => item.year))].sort((a, b) => b.localeCompare(a))
+        const years = processedData.metadata?.years_covered
+          ? [...processedData.metadata.years_covered].sort((a, b) => b.localeCompare(a))
+          : [...new Set(normalizedCutoffs.map(item => item.year))].sort((a, b) => b.localeCompare(a))
         const categories = processedData.metadata?.detected_categories ? [...processedData.metadata.detected_categories] : [...new Set(normalizedCutoffs.map(item => item.category))]
         categories.sort()
         const courses = processedData.metadata?.auto_detected_courses ? [...processedData.metadata.auto_detected_courses.map(c => mapCourseName(c))] : [...new Set(normalizedCutoffs.map(item => item.course))]
@@ -644,9 +646,11 @@ const CollegeFinder = () => {
         }
         institutes.sort()
         // Rounds will be scoped per selected year; initialize using the latest year's rounds
+        // Rounds should reflect the currently selected or latest year (descending years list)
+        const latestYear = years[0]
         const rounds = [...new Set(
           normalizedCutoffs
-            .filter(item => item.year === (years[0] || item.year))
+            .filter(item => item.year === latestYear)
             .map(item => item.round)
         )].sort()
         
