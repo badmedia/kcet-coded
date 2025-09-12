@@ -44,28 +44,30 @@ export function Layout({ children }: LayoutProps) {
           </main>
         </div>
         
-        {/* Watermark - Global */}
+        {/* Watermark - Global (subtle, blurred glass) */}
         <div 
           style={{
             position: 'fixed',
             bottom: '16px',
             right: '16px',
-            zIndex: 9999,
-            backgroundColor: '#ef4444',
-            color: 'white',
-            padding: '8px 16px',
-            borderRadius: '20px',
-            fontSize: '14px',
-            fontWeight: 'bold',
+            zIndex: 40,
+            padding: '8px 14px',
+            borderRadius: '9999px',
+            fontSize: '13px',
+            fontWeight: 600,
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-            border: '2px solid white'
+            color: 'rgba(255,255,255,0.95)',
+            background: 'linear-gradient( to top left, rgba(255,255,255,0.08), rgba(255,255,255,0.02) )',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.25)'
           }}
         >
-          <span>❤️</span>
-          <span>by u/Elegant_Compote9073</span>
+          <span style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.25))' }}>❤️</span>
+          <span style={{ letterSpacing: 0.2, textShadow: '0 1px 1px rgba(0,0,0,0.25)' }}>by u/Elegant_Compote9073</span>
         </div>
       </div>
     </SidebarProvider>
