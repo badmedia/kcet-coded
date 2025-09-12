@@ -513,13 +513,13 @@ const CollegeFinder = () => {
         const urls = [
           '/kcet_cutoffs.json',
           '/data/kcet_cutoffs_consolidated.json',
-          '/kcet_cutoffs2025.json'
+          '/kcet_cutoffs2025.json',
+          '/kcet_cutoffs_round3_2025.json'
         ]
         let response: Response | null = null
         let dataSource = ''
         for (const url of urls) {
-          const bust = `${url}${url.includes('?') ? '&' : '?'}v=${Date.now()}`
-          const r = await fetch(bust, { cache: 'no-store' })
+          const r = await fetch(url, { cache: 'no-store' })
           if (r.ok) {
             response = r
             dataSource = url

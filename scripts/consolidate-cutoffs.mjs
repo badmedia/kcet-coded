@@ -5,18 +5,36 @@ async function consolidateCutoffs() {
   try {
     console.log('Starting consolidation of KCET cutoffs data...');
     
-    // Read both JSON files
+    // Read JSON files
     console.log('Reading kcet_cutoffs.json...');
     const cutoffs2023_2024 = JSON.parse(fs.readFileSync('kcet_cutoffs.json', 'utf8'));
     
     console.log('Reading kcet_cutoffs2025.json...');
     const cutoffs2025 = JSON.parse(fs.readFileSync('kcet_cutoffs2025.json', 'utf8'));
     
+    // Try to read the new Round 3 2025 file if present
+    let cutoffs2025R3 = { cutoffs: [], metadata: {} };
+    const r3Path = 'kcet_cutoffs_round3_2025.json';
+    if (fs.existsSync(r3Path)) {
+      console.log('Reading kcet_cutoffs_round3_2025.json...');
+      try {
+        cutoffs2025R3 = JSON.parse(fs.readFileSync(r3Path, 'utf8'));
+      } catch (e) {
+        console.warn('Warning: Failed to parse kcet_cutoffs_round3_2025.json, skipping.');
+      }
+    } else {
+      console.log('kcet_cutoffs_round3_2025.json not found, proceeding without it.');
+    }
+    
     console.log(`2023-2024 data: ${cutoffs2023_2024.cutoffs.length} records`);
     console.log(`2025 data: ${cutoffs2025.cutoffs.length} records`);
     
-    // Consolidate the data from the cutoffs arrays
-    const consolidatedCutoffs = [...cutoffs2023_2024.cutoffs, ...cutoffs2025.cutoffs];
+    // Consolidate the data from the cutoffs arrays (include R3 2025 if available)
+    const consolidatedCutoffs = [
+      ...((cutoffs2023_2024.cutoffs) || []),
+      ...((cutoffs2025.cutoffs) || []),
+      ...((cutoffs2025R3.cutoffs) || [])
+    ];
     
     // Create consolidated metadata
     const consolidatedMetadata = {
@@ -27,7 +45,11 @@ async function consolidateCutoffs() {
       total_categories: Math.max(cutoffs2023_2024.metadata?.total_categories || 0, cutoffs2025.metadata?.total_categories || 0),
       years_covered: ["2023", "2024", "2025"],
       extraction_method: "Consolidated from multiple sources",
-      source_files: ["kcet_cutoffs.json", "kcet_cutoffs2025.json"]
+      source_files: [
+        "kcet_cutoffs.json",
+        "kcet_cutoffs2025.json",
+        ...(cutoffs2025R3.cutoffs?.length ? ["kcet_cutoffs_round3_2025.json"] : [])
+      ]
     };
     
     // Create the consolidated structure

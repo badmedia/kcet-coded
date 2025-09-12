@@ -44,13 +44,13 @@ const Analytics = () => {
         const urls = [
           '/kcet_cutoffs.json',
           '/data/kcet_cutoffs_consolidated.json',
-          '/kcet_cutoffs2025.json'
+          '/kcet_cutoffs2025.json',
+          '/kcet_cutoffs_round3_2025.json'
         ]
 
         let response: Response | null = null
         for (const url of urls) {
-          const bust = `${url}${url.includes('?') ? '&' : '?'}v=${Date.now()}`
-          response = await fetch(bust, { cache: 'no-store' })
+          response = await fetch(url, { cache: 'no-store' })
           if (response.ok) break
         }
         if (!response || !response.ok) {
@@ -97,7 +97,7 @@ const Analytics = () => {
       setLiveMatches(s.matches)
       setLiveRank(s.userRank)
     })
-    return () => unsubscribe()
+    return () => { unsubscribe() }
   }, [])
 
   const stats = useMemo(() => {

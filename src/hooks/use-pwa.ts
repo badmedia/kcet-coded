@@ -35,23 +35,11 @@ export function usePWA() {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    // Register service worker
+    // Disable service worker usage to avoid caching issues
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then((registration) => {
-          console.log('Service Worker registered successfully:', registration);
-        })
-        .catch((error) => {
-          console.error('Service Worker registration failed:', error);
-        });
-      
-      // Listen for messages from service worker
-      navigator.serviceWorker.addEventListener('message', (event) => {
-        if (event.data && event.data.type === 'FORCE_RELOAD') {
-          console.log('Service Worker: Force reload requested');
-          window.location.reload();
-        }
-      });
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(reg => reg.unregister());
+      }).catch(() => {});
     }
 
     // Add event listeners

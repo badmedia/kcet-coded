@@ -34,15 +34,32 @@ export class CutoffService {
     }
 
     try {
-      const response = await fetch('/data/kcet_cutoffs_consolidated.json');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      // Try multiple sources, including new R3 2025 file
+      const sources = [
+        '/data/kcet_cutoffs_consolidated.json',
+        '/kcet_cutoffs.json',
+        '/kcet_cutoffs2025.json',
+        '/kcet_cutoffs_round3_2025.json'
+      ];
+      let response: Response | null = null;
+      for (const url of sources) {
+        const r = await fetch(url, { cache: 'no-store' });
+        if (r.ok) {
+          response = r;
+          break;
+        }
+      }
+      if (!response) {
+        throw new Error('No cutoff data source available');
       }
       
-      const data = await response.json();
+      const raw = await response.json();
+      const dataArray: any[] = Array.isArray(raw)
+        ? raw
+        : (raw.cutoffs ?? raw.data ?? raw.cutoffs_data ?? []);
       
       // Transform the data to match our expected format
-      this.cutoffs = data.map((item: any) => ({
+      this.cutoffs = dataArray.map((item: any) => ({
         year: item.year || item.Year || "2024",
         round: item.round || item.Round || "Round 1",
         institute_code: item.institute_code || item.college_code || item.instituteCode || "",

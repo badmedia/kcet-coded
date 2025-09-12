@@ -73,26 +73,32 @@ const CutoffExplorer = () => {
       console.log('Loading cutoff data from local JSON file...')
       
       // Try multiple data sources with fallback
-      let response = await fetch('/kcet_cutoffs.json')
+      let response = await fetch('/kcet_cutoffs.json', { cache: 'no-store' })
       let dataSource = 'kcet_cutoffs.json'
       
       if (!response.ok) {
         // Try alternative data source
-        response = await fetch('/data/kcet_cutoffs_consolidated.json')
+        response = await fetch('/data/kcet_cutoffs_consolidated.json', { cache: 'no-store' })
         dataSource = 'data/kcet_cutoffs_consolidated.json'
         
         if (!response.ok) {
           // Try public directory
-          response = await fetch('/public/data/kcet_cutoffs_consolidated.json')
+          response = await fetch('/public/data/kcet_cutoffs_consolidated.json', { cache: 'no-store' })
           dataSource = 'public/data/kcet_cutoffs_consolidated.json'
           
           if (!response.ok) {
             // Try the 2025 data file
-            response = await fetch('/kcet_cutoffs2025.json')
+            response = await fetch('/kcet_cutoffs2025.json', { cache: 'no-store' })
             dataSource = 'kcet_cutoffs2025.json'
             
             if (!response.ok) {
-              throw new Error(`Failed to load data from all sources: ${response.status} ${response.statusText}`)
+              // Try the new Round 3 2025 specific data
+              response = await fetch('/kcet_cutoffs_round3_2025.json', { cache: 'no-store' })
+              dataSource = 'kcet_cutoffs_round3_2025.json'
+              
+              if (!response.ok) {
+                throw new Error(`Failed to load data from all sources: ${response.status} ${response.statusText}`)
+              }
             }
           }
         }
