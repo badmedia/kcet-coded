@@ -210,22 +210,59 @@ export const saveReviewToSupabase = async (reviewData: {
 
     if (collegeError || !collegeData) {
       console.log('College not found, creating new college:', reviewData.collegeCode);
+      
+      // Get the real college name from the colleges list
+      let collegeName = `College ${reviewData.collegeCode}`;
+      try {
+        const response = await fetch('/colleges-list.json');
+        if (response.ok) {
+          const colleges = await response.json();
+          const realCollege = colleges.find((col: any) => col.code === reviewData.collegeCode);
+          if (realCollege) {
+            collegeName = realCollege.name
+              .replace(/^E:\s*/, '')   // Remove leading "E:" prefix
+              .replace(/\s*:\s*$/, '') // Remove trailing ":" and spaces
+              .replace(/\s+/g, ' ')    // Replace multiple spaces with single space
+              .trim();
+          }
+        }
+      } catch (error) {
+        console.log('Could not fetch college name, using default');
+      }
+      
       // Create the college if it doesn't exist
       const { data: newCollege, error: createCollegeError } = await supabase
         .from('colleges')
         .insert({
           code: reviewData.collegeCode,
-          name: `College ${reviewData.collegeCode}` // We'll get the real name from our JSON
+          name: collegeName
         })
         .select()
         .single();
 
       if (createCollegeError || !newCollege) {
         console.error('Error creating college:', createCollegeError);
-        // Fallback to localStorage
-        return saveToLocalStorage(reviewData);
+        // If it's a duplicate key error, try to fetch the existing college
+        if (createCollegeError?.code === '23505') {
+          console.log('College already exists, fetching it...');
+          const { data: existingCollege, error: fetchError } = await supabase
+            .from('colleges')
+            .select('id')
+            .eq('code', reviewData.collegeCode)
+            .single();
+          
+          if (fetchError || !existingCollege) {
+            console.error('Error fetching existing college:', fetchError);
+            return saveToLocalStorage(reviewData);
+          }
+          collegeData = existingCollege;
+        } else {
+          // Fallback to localStorage
+          return saveToLocalStorage(reviewData);
+        }
+      } else {
+        collegeData = newCollege;
       }
-      collegeData = newCollege;
     }
 
     // Use the user session ID for tracking user's own reviews
@@ -252,6 +289,12 @@ export const saveReviewToSupabase = async (reviewData: {
 
     if (error) {
       console.error('Error saving review to Supabase:', error);
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
       // Fallback to localStorage
       return saveToLocalStorage(reviewData);
     }
