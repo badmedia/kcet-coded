@@ -6,7 +6,8 @@ export interface College {
 export interface CollegeReview {
   id: string;
   college_id: string;
-  user_id: string;
+  user_id?: string; // Made optional for anonymous reviews
+  session_id?: string; // Added for anonymous user tracking
   rating: number;
   review_text: string;
   faculty_rating: number;
@@ -92,10 +93,14 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
 
     return reviews.map(review => {
       const college = collegeMap.get(review.college_id);
+      const currentSessionId = getUserSessionId();
+      const isCurrentUser = review.user_id === currentSessionId || (review as any).session_id === currentSessionId;
+      
       return {
         id: review.id,
         college_id: review.college_id,
         user_id: review.user_id,
+        session_id: (review as any).session_id,
         rating: review.rating || 0,
         review_text: review.review_text || '',
         faculty_rating: review.faculty_rating || 0,
@@ -106,7 +111,7 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
         created_at: review.created_at || new Date().toISOString(),
         collegeCode: college?.code,
         collegeName: college?.name,
-        author: review.user_id === getUserSessionId() ? 'You' : `User ${review.user_id?.slice(0, 8) || 'Anonymous'}` // Show "You" for current user's reviews
+        author: isCurrentUser ? 'You' : `Anonymous User` // Show "You" for current user's reviews, "Anonymous User" for others
       };
     });
   } catch (error) {
@@ -227,7 +232,7 @@ export const saveReviewToSupabase = async (reviewData: {
       .from('college_reviews')
       .insert({
         college_id: collegeData.id,
-        user_id: userSessionId,
+        session_id: userSessionId, // Use session_id for anonymous users
         rating: reviewData.rating,
         review_text: reviewData.review_text,
         faculty_rating: reviewData.faculty_rating,
@@ -235,7 +240,7 @@ export const saveReviewToSupabase = async (reviewData: {
         placements_rating: reviewData.placements_rating,
         helpful_votes: 0,
         verified: false
-      })
+      } as any) // Type assertion to bypass TypeScript type checking
       .select()
       .single();
 
@@ -250,6 +255,7 @@ export const saveReviewToSupabase = async (reviewData: {
       id: data.id,
       college_id: data.college_id,
       user_id: data.user_id,
+      session_id: (data as any).session_id,
       rating: data.rating || 0,
       review_text: data.review_text || '',
       faculty_rating: data.faculty_rating || 0,
@@ -259,7 +265,7 @@ export const saveReviewToSupabase = async (reviewData: {
       verified: data.verified || false,
       created_at: data.created_at || new Date().toISOString(),
       collegeCode: reviewData.collegeCode,
-      author: `Anonymous User`
+      author: `You` // Since this is the current user's review
     };
   } catch (error) {
     console.error('Error saving review:', error);
@@ -283,7 +289,7 @@ const saveToLocalStorage = (reviewData: {
   const mockReview: CollegeReview = {
     id: `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     college_id: `college_${reviewData.collegeCode}`,
-    user_id: `user_${Date.now()}`,
+    session_id: getUserSessionId(),
     rating: reviewData.rating,
     review_text: reviewData.review_text,
     faculty_rating: reviewData.faculty_rating,
@@ -293,7 +299,7 @@ const saveToLocalStorage = (reviewData: {
     verified: false,
     created_at: new Date().toISOString(),
     collegeCode: reviewData.collegeCode,
-      author: `Anonymous User`
+    author: `You`
   };
 
   // Store in localStorage for persistence during session
@@ -356,11 +362,13 @@ const deleteFromLocalStorage = (reviewId: string): boolean => {
 // Check if a review belongs to the current user
 export const isUserReview = (review: CollegeReview): boolean => {
   const userSessionId = getUserSessionId();
+  const isCurrentUser = review.user_id === userSessionId || review.session_id === userSessionId;
   console.log('🔍 Checking if review belongs to user:');
   console.log('  Review user_id:', review.user_id);
+  console.log('  Review session_id:', review.session_id);
   console.log('  Current session ID:', userSessionId);
-  console.log('  Is user review:', review.user_id === userSessionId);
-  return review.user_id === userSessionId;
+  console.log('  Is user review:', isCurrentUser);
+  return isCurrentUser;
 };
 
 // Main delete function that tries Supabase first, then localStorage
