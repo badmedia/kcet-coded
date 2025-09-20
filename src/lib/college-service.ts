@@ -94,13 +94,19 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
     return reviews.map(review => {
       const college = collegeMap.get(review.college_id);
       const currentSessionId = getUserSessionId();
-      const isCurrentUser = review.user_id === currentSessionId || (review as any).session_id === currentSessionId;
+      const reviewSessionId = (review as any).session_id;
+      const reviewUserId = review.user_id;
+      
+      // Check if this is the current user's review
+      // For old reviews: check if user_id matches session_id (backward compatibility)
+      // For new reviews: check if session_id matches current session
+      const isCurrentUser = reviewUserId === currentSessionId || reviewSessionId === currentSessionId;
       
       return {
         id: review.id,
         college_id: review.college_id,
         user_id: review.user_id,
-        session_id: (review as any).session_id,
+        session_id: reviewSessionId,
         rating: review.rating || 0,
         review_text: review.review_text || '',
         faculty_rating: review.faculty_rating || 0,
@@ -362,10 +368,16 @@ const deleteFromLocalStorage = (reviewId: string): boolean => {
 // Check if a review belongs to the current user
 export const isUserReview = (review: CollegeReview): boolean => {
   const userSessionId = getUserSessionId();
-  const isCurrentUser = review.user_id === userSessionId || review.session_id === userSessionId;
+  const reviewUserId = review.user_id;
+  const reviewSessionId = review.session_id;
+  
+  // For backward compatibility: old reviews use user_id as session_id
+  // For new reviews: use session_id field
+  const isCurrentUser = reviewUserId === userSessionId || reviewSessionId === userSessionId;
+  
   console.log('🔍 Checking if review belongs to user:');
-  console.log('  Review user_id:', review.user_id);
-  console.log('  Review session_id:', review.session_id);
+  console.log('  Review user_id:', reviewUserId);
+  console.log('  Review session_id:', reviewSessionId);
   console.log('  Current session ID:', userSessionId);
   console.log('  Is user review:', isCurrentUser);
   return isCurrentUser;
