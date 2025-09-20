@@ -23,6 +23,16 @@ export interface CollegeReview {
 
 import { supabase } from "@/integrations/supabase/client";
 
+// Get or create a user session ID for tracking user's own reviews
+const getUserSessionId = (): string => {
+  let sessionId = localStorage.getItem('user_session_id');
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    localStorage.setItem('user_session_id', sessionId);
+  }
+  return sessionId;
+};
+
 // Load reviews from localStorage (temporary solution)
 const loadReviewsFromLocalStorage = (): CollegeReview[] => {
   try {
@@ -93,7 +103,7 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
         created_at: review.created_at || new Date().toISOString(),
         collegeCode: college?.code,
         collegeName: college?.name,
-        author: `User ${review.user_id?.slice(0, 8) || 'Anonymous'}` // Handle null user_id
+        author: review.user_id === getUserSessionId() ? 'You' : `User ${review.user_id?.slice(0, 8) || 'Anonymous'}` // Show "You" for current user's reviews
       };
     });
   } catch (error) {
@@ -204,17 +214,17 @@ export const saveReviewToSupabase = async (reviewData: {
       collegeData = newCollege;
     }
 
-    // Use a simple UUID for anonymous reviews (no need to create user)
-    const tempUserId = crypto.randomUUID();
+    // Use the user session ID for tracking user's own reviews
+    const userSessionId = getUserSessionId();
     
-    console.log('Using anonymous user ID:', tempUserId);
+    console.log('Using user session ID:', userSessionId);
 
     console.log('Inserting review...');
     const { data, error } = await supabase
       .from('college_reviews')
       .insert({
         college_id: collegeData.id,
-        user_id: tempUserId,
+        user_id: userSessionId,
         rating: reviewData.rating,
         review_text: reviewData.review_text,
         faculty_rating: reviewData.faculty_rating,
@@ -297,4 +307,70 @@ const saveToLocalStorage = (reviewData: {
   console.log('Saved review data:', mockReview);
   
   return mockReview;
+};
+
+// Delete review from Supabase
+export const deleteReviewFromSupabase = async (reviewId: string): Promise<boolean> => {
+  try {
+    console.log('Deleting review from Supabase:', reviewId);
+    
+    const { error } = await supabase
+      .from('college_reviews')
+      .delete()
+      .eq('id', reviewId);
+
+    if (error) {
+      console.error('Error deleting review from Supabase:', error);
+      return false;
+    }
+
+    console.log('Review deleted successfully from Supabase');
+    return true;
+  } catch (error) {
+    console.error('Error deleting review:', error);
+    return false;
+  }
+};
+
+// Delete review from localStorage
+const deleteFromLocalStorage = (reviewId: string): boolean => {
+  try {
+    console.log('Deleting review from localStorage:', reviewId);
+    
+    const existingReviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
+    const updatedReviews = existingReviews.filter((review: CollegeReview) => review.id !== reviewId);
+    
+    localStorage.setItem('local_reviews', JSON.stringify(updatedReviews));
+    
+    console.log(`Review deleted from localStorage. ${existingReviews.length - updatedReviews.length} review(s) removed.`);
+    return true;
+  } catch (error) {
+    console.error('Error deleting review from localStorage:', error);
+    return false;
+  }
+};
+
+// Check if a review belongs to the current user
+export const isUserReview = (review: CollegeReview): boolean => {
+  const userSessionId = getUserSessionId();
+  return review.user_id === userSessionId;
+};
+
+// Main delete function that tries Supabase first, then localStorage
+export const deleteReview = async (reviewId: string): Promise<boolean> => {
+  try {
+    // Try Supabase first
+    const supabaseSuccess = await deleteReviewFromSupabase(reviewId);
+    if (supabaseSuccess) {
+      return true;
+    }
+    
+    // Fallback to localStorage
+    console.log('Supabase delete failed, trying localStorage...');
+    return deleteFromLocalStorage(reviewId);
+  } catch (error) {
+    console.error('Error deleting review:', error);
+    // Fallback to localStorage
+    return deleteFromLocalStorage(reviewId);
+  }
 };

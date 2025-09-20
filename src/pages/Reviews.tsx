@@ -66,6 +66,22 @@ const Reviews = () => {
     )
   }
 
+  const handleDeleteReview = (reviewId: string) => {
+    setCollegesWithReviews(prev => 
+      prev.map(item => ({
+        ...item,
+        reviews: item.reviews.filter(review => review.id !== reviewId)
+      }))
+    )
+
+    setFilteredColleges(prev => 
+      prev.map(item => ({
+        ...item,
+        reviews: item.reviews.filter(review => review.id !== reviewId)
+      }))
+    )
+  }
+
   const selectedCollegeReviews = selectedCollege 
     ? collegesWithReviews.find(item => item.college.code === selectedCollege.code)?.reviews || []
     : []
@@ -161,6 +177,7 @@ const Reviews = () => {
           setSelectedCollege(null)
         }}
         onAddReview={handleAddReview}
+        onDeleteReview={handleDeleteReview}
       />
     </div>
   )

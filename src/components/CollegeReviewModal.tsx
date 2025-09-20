@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Star, MessageSquare, ThumbsUp, User, Calendar, CheckCircle } from "lucide-react"
-import { College, CollegeReview, saveReviewToSupabase } from "@/lib/college-service"
+import { Star, MessageSquare, ThumbsUp, User, Calendar, CheckCircle, Trash2 } from "lucide-react"
+import { College, CollegeReview, saveReviewToSupabase, deleteReview, isUserReview } from "@/lib/college-service"
 
 interface CollegeReviewModalProps {
   college: College | null;
@@ -15,6 +15,7 @@ interface CollegeReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddReview: (review: CollegeReview) => void;
+  onDeleteReview: (reviewId: string) => void;
 }
 
 const StarRating = ({ 
@@ -71,7 +72,8 @@ export const CollegeReviewModal = ({
   reviews, 
   isOpen, 
   onClose, 
-  onAddReview 
+  onAddReview,
+  onDeleteReview
 }: CollegeReviewModalProps) => {
   const [showAddReview, setShowAddReview] = useState(false);
   const [newReview, setNewReview] = useState({
@@ -129,6 +131,25 @@ export const CollegeReviewModal = ({
     } catch (error) {
       console.error("Error saving review:", error);
       alert(`Failed to save review: ${error.message || 'Unknown error'}. Please check the console for details.`);
+    }
+  };
+
+  const handleDeleteReview = async (reviewId: string) => {
+    if (!confirm("Are you sure you want to delete this review? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      const success = await deleteReview(reviewId);
+      if (success) {
+        console.log('Review deleted successfully');
+        onDeleteReview(reviewId);
+      } else {
+        alert("Failed to delete review. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting review:", error);
+      alert(`Failed to delete review: ${error.message || 'Unknown error'}. Please try again.`);
     }
   };
 
@@ -269,9 +290,22 @@ export const CollegeReviewModal = ({
                             <Calendar className="h-4 w-4 text-gray-400" />
                             <span className="text-gray-400">{new Date(review.created_at).toLocaleDateString()}</span>
                           </div>
-                          <div className="flex items-center gap-1">
-                            <ThumbsUp className="h-4 w-4 text-green-400" />
-                            <span className="font-medium text-gray-300">{review.helpful_votes}</span>
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1">
+                              <ThumbsUp className="h-4 w-4 text-green-400" />
+                              <span className="font-medium text-gray-300">{review.helpful_votes}</span>
+                            </div>
+                            {isUserReview(review) && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteReview(review.id)}
+                                className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-900/20"
+                                title="Delete your review"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
                           </div>
                         </div>
                       </div>
