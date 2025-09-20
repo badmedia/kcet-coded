@@ -104,12 +104,21 @@ export const loadColleges = async (): Promise<College[]> => {
 
 export const loadCollegeReviews = async (): Promise<CollegeReview[]> => {
   try {
-    // For now, use localStorage since Supabase has RLS restrictions
-    console.log('Loading reviews from localStorage...');
+    // Try Supabase first, fallback to localStorage
+    console.log('Loading reviews from Supabase...');
+    const supabaseReviews = await loadReviewsFromSupabase();
+    if (supabaseReviews.length > 0) {
+      console.log(`Loaded ${supabaseReviews.length} reviews from Supabase`);
+      return supabaseReviews;
+    }
+    
+    // Fallback to localStorage
+    console.log('No Supabase reviews, loading from localStorage...');
     return loadReviewsFromLocalStorage();
   } catch (error) {
     console.error('Error loading college reviews:', error);
-    return [];
+    // Fallback to localStorage
+    return loadReviewsFromLocalStorage();
   }
 };
 
@@ -145,43 +154,140 @@ export const saveReviewToSupabase = async (reviewData: {
   try {
     console.log('Saving review to Supabase:', reviewData.collegeCode);
     
-    // For now, let's use a simpler approach and store reviews locally
-    // until we can properly set up the RLS policies
-    console.log('Using localStorage fallback due to RLS restrictions');
-    
-    // Create a mock review object
-    const mockReview: CollegeReview = {
-      id: `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      college_id: `college_${reviewData.collegeCode}`,
-      user_id: `user_${Date.now()}`,
-      rating: reviewData.rating,
-      review_text: reviewData.review_text,
-      faculty_rating: reviewData.faculty_rating,
-      infrastructure_rating: reviewData.infrastructure_rating,
-      placements_rating: reviewData.placements_rating,
-      helpful_votes: 0,
-      verified: false,
-      created_at: new Date().toISOString(),
-      collegeCode: reviewData.collegeCode,
-      author: `User ${Date.now().toString().slice(-8)}`
-    };
+    // First, check if the college exists in the database
+    let { data: collegeData, error: collegeError } = await supabase
+      .from('colleges')
+      .select('id')
+      .eq('code', reviewData.collegeCode)
+      .single();
 
-    // Store in localStorage for persistence during session
-    const existingReviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
-    console.log(`Before saving: ${existingReviews.length} reviews in localStorage`);
+    if (collegeError || !collegeData) {
+      console.log('College not found, creating new college:', reviewData.collegeCode);
+      // Create the college if it doesn't exist
+      const { data: newCollege, error: createCollegeError } = await supabase
+        .from('colleges')
+        .insert({
+          code: reviewData.collegeCode,
+          name: `College ${reviewData.collegeCode}` // We'll get the real name from our JSON
+        })
+        .select()
+        .single();
+
+      if (createCollegeError || !newCollege) {
+        console.error('Error creating college:', createCollegeError);
+        // Fallback to localStorage
+        return saveToLocalStorage(reviewData);
+      }
+      collegeData = newCollege;
+    }
+
+    // Create a temporary user for anonymous reviews
+    const tempUserId = crypto.randomUUID();
+    const tempUserEmail = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}@temp.com`;
     
-    existingReviews.push(mockReview);
-    localStorage.setItem('local_reviews', JSON.stringify(existingReviews));
-    
-    // Verify it was saved
-    const savedReviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
-    console.log(`After saving: ${savedReviews.length} reviews in localStorage`);
-    console.log('Review saved to localStorage:', mockReview.id);
-    console.log('Saved review data:', mockReview);
-    
-    return mockReview;
+    console.log('Creating temporary user:', tempUserId);
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .insert({
+        id: tempUserId,
+        email: tempUserEmail,
+        full_name: 'Anonymous User'
+      })
+      .select()
+      .single();
+
+    if (userError) {
+      console.error('Error creating temporary user:', userError);
+      // Fallback to localStorage
+      return saveToLocalStorage(reviewData);
+    }
+
+    console.log('Inserting review...');
+    const { data, error } = await supabase
+      .from('college_reviews')
+      .insert({
+        college_id: collegeData.id,
+        user_id: tempUserId,
+        rating: reviewData.rating,
+        review_text: reviewData.review_text,
+        faculty_rating: reviewData.faculty_rating,
+        infrastructure_rating: reviewData.infrastructure_rating,
+        placements_rating: reviewData.placements_rating,
+        helpful_votes: 0,
+        verified: false
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error saving review to Supabase:', error);
+      // Fallback to localStorage
+      return saveToLocalStorage(reviewData);
+    }
+
+    console.log('Review saved successfully to Supabase:', data.id);
+    return {
+      id: data.id,
+      college_id: data.college_id,
+      user_id: data.user_id,
+      rating: data.rating || 0,
+      review_text: data.review_text || '',
+      faculty_rating: data.faculty_rating || 0,
+      infrastructure_rating: data.infrastructure_rating || 0,
+      placements_rating: data.placements_rating || 0,
+      helpful_votes: data.helpful_votes || 0,
+      verified: data.verified || false,
+      created_at: data.created_at || new Date().toISOString(),
+      collegeCode: reviewData.collegeCode,
+      author: `User ${data.user_id.slice(0, 8)}`
+    };
   } catch (error) {
     console.error('Error saving review:', error);
-    return null;
+    // Fallback to localStorage
+    return saveToLocalStorage(reviewData);
   }
+};
+
+// Helper function to save to localStorage as fallback
+const saveToLocalStorage = (reviewData: {
+  collegeCode: string;
+  rating: number;
+  review_text: string;
+  faculty_rating: number;
+  infrastructure_rating: number;
+  placements_rating: number;
+  user_id?: string;
+}): CollegeReview => {
+  console.log('Saving to localStorage as fallback');
+  
+  const mockReview: CollegeReview = {
+    id: `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    college_id: `college_${reviewData.collegeCode}`,
+    user_id: `user_${Date.now()}`,
+    rating: reviewData.rating,
+    review_text: reviewData.review_text,
+    faculty_rating: reviewData.faculty_rating,
+    infrastructure_rating: reviewData.infrastructure_rating,
+    placements_rating: reviewData.placements_rating,
+    helpful_votes: 0,
+    verified: false,
+    created_at: new Date().toISOString(),
+    collegeCode: reviewData.collegeCode,
+    author: `User ${Date.now().toString().slice(-8)}`
+  };
+
+  // Store in localStorage for persistence during session
+  const existingReviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
+  console.log(`Before saving: ${existingReviews.length} reviews in localStorage`);
+  
+  existingReviews.push(mockReview);
+  localStorage.setItem('local_reviews', JSON.stringify(existingReviews));
+  
+  // Verify it was saved
+  const savedReviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
+  console.log(`After saving: ${savedReviews.length} reviews in localStorage`);
+  console.log('Review saved to localStorage:', mockReview.id);
+  console.log('Saved review data:', mockReview);
+  
+  return mockReview;
 };
