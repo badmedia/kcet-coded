@@ -29,6 +29,9 @@ const getUserSessionId = (): string => {
   if (!sessionId) {
     sessionId = crypto.randomUUID();
     localStorage.setItem('user_session_id', sessionId);
+    console.log('🆕 Created new user session ID:', sessionId);
+  } else {
+    console.log('🔄 Using existing user session ID:', sessionId);
   }
   return sessionId;
 };
@@ -353,6 +356,10 @@ const deleteFromLocalStorage = (reviewId: string): boolean => {
 // Check if a review belongs to the current user
 export const isUserReview = (review: CollegeReview): boolean => {
   const userSessionId = getUserSessionId();
+  console.log('🔍 Checking if review belongs to user:');
+  console.log('  Review user_id:', review.user_id);
+  console.log('  Current session ID:', userSessionId);
+  console.log('  Is user review:', review.user_id === userSessionId);
   return review.user_id === userSessionId;
 };
 
