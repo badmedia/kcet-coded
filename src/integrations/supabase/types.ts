@@ -90,7 +90,8 @@ export type Database = {
           placements_rating: number | null
           rating: number | null
           review_text: string | null
-          user_id: string
+          session_id: string | null
+          user_id: string | null
           verified: boolean | null
         }
         Insert: {
@@ -103,7 +104,8 @@ export type Database = {
           placements_rating?: number | null
           rating?: number | null
           review_text?: string | null
-          user_id: string
+          session_id?: string | null
+          user_id?: string | null
           verified?: boolean | null
         }
         Update: {
@@ -116,7 +118,8 @@ export type Database = {
           placements_rating?: number | null
           rating?: number | null
           review_text?: string | null
-          user_id?: string
+          session_id?: string | null
+          user_id?: string | null
           verified?: boolean | null
         }
         Relationships: [

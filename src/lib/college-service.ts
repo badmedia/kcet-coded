@@ -94,7 +94,7 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
     return reviews.map(review => {
       const college = collegeMap.get(review.college_id);
       const currentSessionId = getUserSessionId();
-      const reviewSessionId = (review as any).session_id;
+      const reviewSessionId = review.session_id;
       const reviewUserId = review.user_id;
       
       // Check if this is the current user's review
@@ -283,7 +283,7 @@ export const saveReviewToSupabase = async (reviewData: {
         placements_rating: reviewData.placements_rating,
         helpful_votes: 0,
         verified: false
-      } as any) // Type assertion to bypass TypeScript type checking
+      })
       .select()
       .single();
 
@@ -304,7 +304,7 @@ export const saveReviewToSupabase = async (reviewData: {
       id: data.id,
       college_id: data.college_id,
       user_id: data.user_id,
-      session_id: (data as any).session_id,
+      session_id: data.session_id,
       rating: data.rating || 0,
       review_text: data.review_text || '',
       faculty_rating: data.faculty_rating || 0,
