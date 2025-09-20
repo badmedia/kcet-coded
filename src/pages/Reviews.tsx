@@ -43,9 +43,18 @@ const Reviews = () => {
     }
   }, [searchTerm, collegesWithReviews])
 
-  const handleCollegeClick = (college: College) => {
+  const handleCollegeClick = async (college: College) => {
     setSelectedCollege(college)
     setIsModalOpen(true)
+    
+    // Refresh reviews for this college when modal opens
+    try {
+      const data = await getCollegesWithReviews()
+      setCollegesWithReviews(data)
+      setFilteredColleges(data)
+    } catch (error) {
+      console.error("Error refreshing reviews:", error)
+    }
   }
 
   const handleAddReview = (review: CollegeReview) => {

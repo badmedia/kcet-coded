@@ -81,6 +81,24 @@ const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
 
     if (collegesError) {
       console.error('Error loading colleges:', collegesError);
+      // Still return reviews even if college data fails to load
+      return reviews.map(review => ({
+        id: review.id,
+        college_id: review.college_id,
+        user_id: review.user_id,
+        session_id: review.session_id,
+        rating: review.rating || 0,
+        review_text: review.review_text || '',
+        faculty_rating: review.faculty_rating || 0,
+        infrastructure_rating: review.infrastructure_rating || 0,
+        placements_rating: review.placements_rating || 0,
+        helpful_votes: review.helpful_votes || 0,
+        verified: review.verified || false,
+        created_at: review.created_at || new Date().toISOString(),
+        collegeCode: 'Unknown',
+        collegeName: 'Unknown College',
+        author: 'Anonymous User'
+      }));
     }
 
     // Create a lookup map for colleges
@@ -151,20 +169,15 @@ export const loadColleges = async (): Promise<College[]> => {
 
 export const loadCollegeReviews = async (): Promise<CollegeReview[]> => {
   try {
-    // Try Supabase first, fallback to localStorage
+    // Always try Supabase first
     console.log('Loading reviews from Supabase...');
     const supabaseReviews = await loadReviewsFromSupabase();
-    if (supabaseReviews.length > 0) {
-      console.log(`Loaded ${supabaseReviews.length} reviews from Supabase`);
-      return supabaseReviews;
-    }
-    
-    // Fallback to localStorage
-    console.log('No Supabase reviews, loading from localStorage...');
-    return loadReviewsFromLocalStorage();
+    console.log(`Loaded ${supabaseReviews.length} reviews from Supabase`);
+    return supabaseReviews;
   } catch (error) {
-    console.error('Error loading college reviews:', error);
-    // Fallback to localStorage
+    console.error('Error loading college reviews from Supabase:', error);
+    // Only fallback to localStorage if Supabase completely fails
+    console.log('Falling back to localStorage...');
     return loadReviewsFromLocalStorage();
   }
 };
