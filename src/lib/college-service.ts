@@ -28,6 +28,7 @@ const loadReviewsFromLocalStorage = (): CollegeReview[] => {
   try {
     const reviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
     console.log(`Loaded ${reviews.length} reviews from localStorage`);
+    console.log('Reviews data:', reviews);
     return reviews;
   } catch (error) {
     console.error('Error loading reviews from localStorage:', error);
@@ -167,10 +168,17 @@ export const saveReviewToSupabase = async (reviewData: {
 
     // Store in localStorage for persistence during session
     const existingReviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
+    console.log(`Before saving: ${existingReviews.length} reviews in localStorage`);
+    
     existingReviews.push(mockReview);
     localStorage.setItem('local_reviews', JSON.stringify(existingReviews));
-
+    
+    // Verify it was saved
+    const savedReviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
+    console.log(`After saving: ${savedReviews.length} reviews in localStorage`);
     console.log('Review saved to localStorage:', mockReview.id);
+    console.log('Saved review data:', mockReview);
+    
     return mockReview;
   } catch (error) {
     console.error('Error saving review:', error);
