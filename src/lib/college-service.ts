@@ -40,39 +40,62 @@ const loadReviewsFromLocalStorage = (): CollegeReview[] => {
 const loadReviewsFromSupabase = async (): Promise<CollegeReview[]> => {
   try {
     console.log('Loading reviews from Supabase...');
-    const { data, error } = await supabase
+    
+    // First try simple query without joins
+    const { data: reviews, error: reviewsError } = await supabase
       .from('college_reviews')
-      .select(`
-        *,
-        colleges!college_reviews_college_id_fkey (
-          code,
-          name
-        )
-      `)
+      .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Error loading reviews from Supabase:', error);
+    if (reviewsError) {
+      console.error('Error loading reviews from Supabase:', reviewsError);
       return [];
     }
 
-    console.log(`Loaded ${data?.length || 0} reviews from Supabase`);
-    return data?.map(review => ({
-      id: review.id,
-      college_id: review.college_id,
-      user_id: review.user_id,
-      rating: review.rating || 0,
-      review_text: review.review_text || '',
-      faculty_rating: review.faculty_rating || 0,
-      infrastructure_rating: review.infrastructure_rating || 0,
-      placements_rating: review.placements_rating || 0,
-      helpful_votes: review.helpful_votes || 0,
-      verified: review.verified || false,
-      created_at: review.created_at || new Date().toISOString(),
-      collegeCode: review.colleges?.code,
-      collegeName: review.colleges?.name,
-      author: `User ${review.user_id.slice(0, 8)}` // Temporary author display
-    })) || [];
+    console.log(`Loaded ${reviews?.length || 0} reviews from Supabase`);
+    
+    if (!reviews || reviews.length === 0) {
+      return [];
+    }
+
+    // Get college information for each review
+    const collegeIds = [...new Set(reviews.map(review => review.college_id))];
+    const { data: colleges, error: collegesError } = await supabase
+      .from('colleges')
+      .select('id, code, name')
+      .in('id', collegeIds);
+
+    if (collegesError) {
+      console.error('Error loading colleges:', collegesError);
+    }
+
+    // Create a lookup map for colleges
+    const collegeMap = new Map();
+    if (colleges) {
+      colleges.forEach(college => {
+        collegeMap.set(college.id, college);
+      });
+    }
+
+    return reviews.map(review => {
+      const college = collegeMap.get(review.college_id);
+      return {
+        id: review.id,
+        college_id: review.college_id,
+        user_id: review.user_id,
+        rating: review.rating || 0,
+        review_text: review.review_text || '',
+        faculty_rating: review.faculty_rating || 0,
+        infrastructure_rating: review.infrastructure_rating || 0,
+        placements_rating: review.placements_rating || 0,
+        helpful_votes: review.helpful_votes || 0,
+        verified: review.verified || false,
+        created_at: review.created_at || new Date().toISOString(),
+        collegeCode: college?.code,
+        collegeName: college?.name,
+        author: `User ${review.user_id?.slice(0, 8) || 'Anonymous'}` // Handle null user_id
+      };
+    });
   } catch (error) {
     console.error('Error loading reviews:', error);
     return [];
@@ -181,26 +204,10 @@ export const saveReviewToSupabase = async (reviewData: {
       collegeData = newCollege;
     }
 
-    // Create a temporary user for anonymous reviews
+    // Use a simple UUID for anonymous reviews (no need to create user)
     const tempUserId = crypto.randomUUID();
-    const tempUserEmail = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}@temp.com`;
     
-    console.log('Creating temporary user:', tempUserId);
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .insert({
-        id: tempUserId,
-        email: tempUserEmail,
-        full_name: 'Anonymous User'
-      })
-      .select()
-      .single();
-
-    if (userError) {
-      console.error('Error creating temporary user:', userError);
-      // Fallback to localStorage
-      return saveToLocalStorage(reviewData);
-    }
+    console.log('Using anonymous user ID:', tempUserId);
 
     console.log('Inserting review...');
     const { data, error } = await supabase
@@ -239,7 +246,7 @@ export const saveReviewToSupabase = async (reviewData: {
       verified: data.verified || false,
       created_at: data.created_at || new Date().toISOString(),
       collegeCode: reviewData.collegeCode,
-      author: `User ${data.user_id.slice(0, 8)}`
+      author: `Anonymous User`
     };
   } catch (error) {
     console.error('Error saving review:', error);
@@ -273,7 +280,7 @@ const saveToLocalStorage = (reviewData: {
     verified: false,
     created_at: new Date().toISOString(),
     collegeCode: reviewData.collegeCode,
-    author: `User ${Date.now().toString().slice(-8)}`
+      author: `Anonymous User`
   };
 
   // Store in localStorage for persistence during session
