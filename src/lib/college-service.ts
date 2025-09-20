@@ -27,6 +27,7 @@ import { supabase } from "@/integrations/supabase/client";
 const loadReviewsFromLocalStorage = (): CollegeReview[] => {
   try {
     const reviews = JSON.parse(localStorage.getItem('local_reviews') || '[]');
+    console.log(`Loaded ${reviews.length} reviews from localStorage`);
     return reviews;
   } catch (error) {
     console.error('Error loading reviews from localStorage:', error);
@@ -102,12 +103,12 @@ export const loadColleges = async (): Promise<College[]> => {
 
 export const loadCollegeReviews = async (): Promise<CollegeReview[]> => {
   try {
-    // Load from Supabase
-    return await loadReviewsFromSupabase();
+    // For now, use localStorage since Supabase has RLS restrictions
+    console.log('Loading reviews from localStorage...');
+    return loadReviewsFromLocalStorage();
   } catch (error) {
     console.error('Error loading college reviews:', error);
-    // Fallback to localStorage if Supabase fails
-    return loadReviewsFromLocalStorage();
+    return [];
   }
 };
 
@@ -116,10 +117,15 @@ export const getCollegesWithReviews = async (): Promise<{ college: College; revi
     const colleges = await loadColleges();
     const allReviews = await loadCollegeReviews();
     
-    return colleges.map(college => ({
+    console.log(`Found ${colleges.length} colleges and ${allReviews.length} reviews`);
+    
+    const result = colleges.map(college => ({
       college,
       reviews: allReviews.filter(review => review.collegeCode === college.code)
     }));
+    
+    console.log(`Mapped ${result.length} colleges with reviews`);
+    return result;
   } catch (error) {
     console.error('Error loading colleges with reviews:', error);
     return [];
